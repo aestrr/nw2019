@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class JSONToRecieptParser {
+public class JSONToReceiptParser {
 
     public static Receipt parseJson(JSONObject jsonObject) throws JSONException {
        String companyName = jsonObject.getString("companyName");

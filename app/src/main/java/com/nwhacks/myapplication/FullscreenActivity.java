@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
@@ -22,7 +23,6 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import android.widget.EditText;
@@ -150,14 +150,6 @@ public class FullscreenActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 toggle();
-            }
-        });
-
-        Button button = findViewById(R.id.button_status);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(FullscreenActivity.this, InitialBudgetActivity.class));
             }
         });
 

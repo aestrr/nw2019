@@ -19,6 +19,39 @@ import java.util.regex.Pattern;
 
 public class OcrStaticProcessor {
 
+    public static JSONObject receiptJson = createJson();
+
+    public OcrStaticProcessor() {
+        receiptJson = createJson();
+    }
+
+    private static JSONObject createJson() {
+        JSONObject receipt = new JSONObject();
+        JSONArray items = new JSONArray();
+        JSONObject item = new JSONObject();
+        try {
+            receipt.put("companyName", "FRESH ST MARKET");
+            receipt.put("transactionDate", "2018/06/11");
+            receipt.put("totalCost", 30.99);
+            item.put("productName", "FAM PK BNLS SKNL CHICKEN THIG");
+            item.put("productCost", 24.16);
+            items.put(item);
+            item = new JSONObject();
+            item.put("productName", "LA GRILLE SEASNG-MNTRL STK SP");
+            item.put("productCost", 6.79);
+            items.put(item);
+            item = new JSONObject();
+            item.put("productName", "BAG CHARGE - PLASTIC");
+            item.put("productCost", 0.04);
+            items.put(item);
+            receipt.put("purchasedItems", items);
+            return receipt;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static JSONObject parseDetectedItems(SparseArray<TextBlock> blocks) {
         int nTextBlocks = blocks.size();
         if (nTextBlocks < 1) {

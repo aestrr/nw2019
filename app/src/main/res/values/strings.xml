@@ -18,4 +18,5 @@
     <string name="ocr_error">"Error reading text: %1$s"</string>
     <string name="title_activity_status">StatusActivity</string>
     <string name="title_activity_initial_budget">InitialBudgetActivity</string>
+    <string name="title_activity_receipt">ReceiptActivity</string>
 </resources>
