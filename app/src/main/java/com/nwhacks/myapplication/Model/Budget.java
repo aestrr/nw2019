@@ -14,6 +14,10 @@ public class Budget {
         this.initialBudgetSetTime = Calendar.getInstance();
     }
 
+    public void setCurrentBudget(double initialMonthlyBudget) {
+        this.currentBudget = initialMonthlyBudget;
+    }
+
     public void spend(double amount) {
         currentBudget -= amount;
     }

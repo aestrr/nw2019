@@ -63,6 +63,8 @@
         android:layout_height="59dp"
         android:text="Enter"
         android:translationY="100dp"
-        android:translationX="270dp"/>
+        android:translationX="270dp"
+        android:background="@color/colorAccent"
+        android:textAppearance="@android:style/TextAppearance.Material.Small"/>
 
 </android.support.design.widget.CoordinatorLayout>

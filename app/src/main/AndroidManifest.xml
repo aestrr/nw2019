@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".InitialBudgetActivity"
-            android:label="@string/title_activity_initial_budget"
+            android:label="Budget Bunny"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".FullscreenActivity"

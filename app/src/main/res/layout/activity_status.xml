@@ -89,7 +89,11 @@
         android:id="@+id/button"
         android:layout_width="110dp"
         android:layout_height="74dp"
+        android:background="@color/colorAccent"
         android:text="Set Balance"
+        android:textAppearance="@android:style/TextAppearance.Material.Small"
+        android:textSize="16sp"
+        android:textStyle="bold"
         android:translationX="300dp"
         android:translationY="60dp" />
 

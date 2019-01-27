@@ -12,7 +12,7 @@ import android.widget.EditText;
 
 public class InitialBudgetActivity extends AppCompatActivity {
     private EditText text;
-    private String sMonthlyBudget;
+    public String sMonthlyBudget;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,13 +35,12 @@ public class InitialBudgetActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(InitialBudgetActivity.this, StatusActivity.class));
+                Intent intent = new Intent();
                 sMonthlyBudget = text.getText().toString();
+                intent.putExtra("EXTRA_INITIAL_BALANCE", sMonthlyBudget);
+                setResult(RESULT_OK, intent);
+                finish();
             }
         });
-    }
-
-    public String getsMonthlyBudget() {
-        return sMonthlyBudget;
     }
 }
