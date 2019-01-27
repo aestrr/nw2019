@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
@@ -34,7 +35,7 @@ public class FullscreenActivity extends AppCompatActivity {
     private final Handler mHideHandler = new Handler();
     private View mContentView;
 
-    AnimationDrawable bun;
+    public AnimationDrawable bun;
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
         @Override
@@ -111,9 +112,6 @@ public class FullscreenActivity extends AppCompatActivity {
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
 
 
-        ImageView img = (ImageView) findViewById(R.id.Happy);
-        img.setBackgroundResource(R.drawable.happy);
-        bun = (AnimationDrawable) img.getBackground();
 
 
     }
@@ -174,14 +172,32 @@ public class FullscreenActivity extends AppCompatActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        ImageView stand = findViewById(R.id.Bunny);
+
+        ImageView img = (ImageView) findViewById(R.id.Happy);
+        img.setBackgroundResource(R.drawable.happy);
+        bun = (AnimationDrawable) img.getBackground();
+
+        final ImageView stand = findViewById(R.id.Bunny);
         stand.setVisibility(mContentView.INVISIBLE);
 
-        bun.start();
+        bun.run();
+
     }
 
     @Override
-    public void
+    public void onEnterAnimationComplete() {
+        super.onEnterAnimationComplete();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        findViewById(R.id.Bunny).setVisibility(mContentView.VISIBLE);
+    }
+
+
+
+
 
 
 
