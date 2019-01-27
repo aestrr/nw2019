@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,6 +16,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:keepScreenOn="true"
+        android:text=" "
         android:textColor="#33b5e5"
         android:textSize="50sp"
         android:textStyle="bold" />
@@ -35,33 +37,50 @@
             android:background="@color/black_overlay"
             android:orientation="horizontal"
             tools:ignore="UselessParent">
-            
+
+            <Button
+                android:id="@+id/button_status"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="110dp"
+                android:layout_height="74dp"
+                android:text="Status"
+                android:translationX="10dp"/>
+
+            <Button
+                android:id="@+id/button_camera"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="110dp"
+                android:layout_height="74dp"
+                android:onClick="openCamera"
+                android:text="Camera"
+                android:translationX="40dp"/>
+
+
+            <Button
+                android:id="@+id/button_receipt"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="110dp"
+                android:layout_height="74dp"
+                android:text="Receipt"
+                android:onClick="openReceipt"
+                android:translationX="70dp"/>
+
         </LinearLayout>
-
-        <RelativeLayout
-            android:id="@+id/relativeLayout1"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="bottom">
-
-            <Button
-                android:id="@+id/button1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentBottom="true"
-                android:text="prev" />
-
-            <Button
-                android:id="@+id/button2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:text="next" />
-
-        </RelativeLayout>
-
     </FrameLayout>
+
+
+    <ImageView
+        android:id="@+id/Bunny"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/bunny" />
+
+    <ImageView
+        android:id="@+id/Happy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
 
 </FrameLayout>

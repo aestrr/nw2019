@@ -6,9 +6,9 @@ import java.util.List;
 public class ReceiptManager {
 
     private List<Receipt> receipts;
-    private ReceiptManager receiptManager;
+    private static ReceiptManager receiptManager;
 
-    public ReceiptManager getInstance() {
+    public static ReceiptManager getInstance() {
         if (receiptManager == null) {
             receiptManager = new ReceiptManager();
         }
@@ -20,7 +20,11 @@ public class ReceiptManager {
         receipts = new ArrayList<>();
     }
 
-    public List<Receipt> getReceipts() {
-        return receipts;
+    public void addReceipt(Receipt receipt) {
+        receipts.add(receipt);
+    }
+
+    public Receipt getReceipt() {
+        return receipts.get(0);
     }
 }

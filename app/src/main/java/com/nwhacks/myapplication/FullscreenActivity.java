@@ -1,16 +1,55 @@
 package com.nwhacks.myapplication;
 
 import android.annotation.SuppressLint;
+
+import android.graphics.drawable.AnimationDrawable;
+
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.net.Uri;
+import android.os.Environment;
+import android.os.StrictMode;
+import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
+import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.Button;
+import android.widget.ImageView;
 
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.google.android.gms.vision.Frame;
+import com.google.android.gms.vision.text.Text;
+import com.google.android.gms.vision.text.TextBlock;
+import com.google.android.gms.vision.text.TextRecognizer;
+import com.nwhacks.myapplication.Model.Receipt;
+
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import static android.content.ContentValues.TAG;
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
+
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -37,7 +76,17 @@ public class FullscreenActivity extends AppCompatActivity {
     private final Handler mHideHandler = new Handler();
     private View mContentView;
 
+
+    public AnimationDrawable bun;
+
     private static final int RC_OCR_CAPTURE = 9003;
+
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    private Bitmap mImageBitmap;
+    private String mCurrentPhotoPath;
+    private ImageView mImageView;
+
+    private String danceBunny;
 
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -100,7 +149,6 @@ public class FullscreenActivity extends AppCompatActivity {
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
 
-
         // Set up the user interaction to manually show or hide the system UI.
         mContentView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,10 +157,25 @@ public class FullscreenActivity extends AppCompatActivity {
             }
         });
 
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            danceBunny = extras.getString("EXTRA_RECEIPT");
+        }
+
+        onFeeding();
+
+        Button button = findViewById(R.id.button_status);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(FullscreenActivity.this, InitialBudgetActivity.class));
+            }
+        });
+
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+        //findViewById(R.id.button).setOnTouchListener(mDelayHideTouchListener);
     }
 
     @Override
@@ -168,8 +231,183 @@ public class FullscreenActivity extends AppCompatActivity {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
+    public void onFeeding() {
+        if (danceBunny != null) {
+
+            ImageView img = (ImageView) findViewById(R.id.Happy);
+            img.setBackgroundResource(R.drawable.happy);
+            bun = (AnimationDrawable) img.getBackground();
+
+            final ImageView stand = findViewById(R.id.Bunny);
+            stand.setVisibility(mContentView.INVISIBLE);
+
+            bun.run();
+        }
+    }
+
+
+
+    @Override
+    public void onEnterAnimationComplete() {
+        super.onEnterAnimationComplete();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        findViewById(R.id.Bunny).setVisibility(mContentView.VISIBLE);
+    }
+
+//
+//    AnimationDrawable rocketAnimation;
+//
+//    public void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.main);
+//
+//        ImageView rocketImage = (ImageView) findViewById(R.id.Bunny);
+//        rocketImage.setBackgroundResource(R.drawable.bunny_happy);
+//        rocketAnimation = (AnimationDrawable) rocketImage.getBackground();
+//
+//        rocketImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                rocketAnimation.start();
+//            }
+//        });
+//    }
+
+
     public void openCamera(View view) {
-        Intent intent = new Intent(this, OcrCaptureActivity.class);
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+                Log.i(TAG, "IOException");
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.android.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
+
+    public void openReceipt(View view) {
+        Intent intent = new Intent(FullscreenActivity.this, ReceiptActivity.class);
         startActivity(intent);
     }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        System.out.println("DIR_PICS: " + Environment.DIRECTORY_PICTURES);
+        System.out.println("storageDir: " + storageDir);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        System.out.println("mCurrentPhotoPath: " + mCurrentPhotoPath);
+
+        return image;
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE) {
+            if (resultCode == RESULT_OK) {
+                File imageFile = new File(mCurrentPhotoPath);
+                // use imageFile to open your image
+                System.out.println("imageFile absolute path : " + imageFile.getAbsolutePath());
+                //File file = new File(mCurrentPhotoPath);
+                Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+                Matrix matrix = new Matrix();
+
+                matrix.postRotate(90);
+
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(), bitmap.getHeight(), true);
+
+                Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+                TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
+
+                if (!textRecognizer.isOperational()) {
+                    // Note: The first time that an app using a Vision API is installed on a
+                    // device, GMS will download a native libraries to the device in order to do detection.
+                    // Usually this completes before the app is run for the first time.  But if that
+                    // download has not yet completed, then the above call will not detect any text,
+                    // barcodes, or faces.
+                    //
+                    // isOperational() can be used to check if the required native libraries are currently
+                    // available.  The detectors will automatically become operational once the library
+                    // downloads complete on device.
+                    Log.w(TAG, "Detector dependencies are not yet available.");
+
+                    // Check for low storage.  If there is low storage, the native library will not be
+                    // downloaded, so detection will not become operational.
+                    IntentFilter lowstorageFilter = new IntentFilter(Intent.ACTION_DEVICE_STORAGE_LOW);
+                    boolean hasLowStorage = registerReceiver(null, lowstorageFilter) != null;
+
+                    if (hasLowStorage) {
+                        Toast.makeText(this, R.string.low_storage_error, Toast.LENGTH_LONG).show();
+                        Log.w(TAG, getString(R.string.low_storage_error));
+                    }
+                }
+
+                Frame imageFrame = new Frame.Builder().setBitmap(rotatedBitmap).build();
+                System.out.println("isOperational: " + textRecognizer.isOperational());
+                SparseArray<TextBlock> textBlocks = textRecognizer.detect(imageFrame);
+                for (int i = 0; i < textBlocks.size(); i++) {
+                    TextBlock textBlock = textBlocks.get(textBlocks.keyAt(i));
+                    System.out.println("textBlocks: " + textBlock.getValue());
+                    //System.out.println("textBlocks: " + textBlocks.valueAt(i).getValue());
+                }
+                //JSONObject receipts = OcrStaticProcessor.parseDetectedItems(textBlocks);
+                Intent i = new Intent(FullscreenActivity.this, ReceiptActivity.class);
+                i.putExtra("EXTRA_JSON", OcrStaticProcessor.receiptJson.toString());
+                startActivity(i);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public Bitmap decodeFile(String path) {
+        try {
+            // Decode image size
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(path, o);
+            // The new size we want to scale to
+            final int REQUIRED_SIZE = 70;
+
+            // Find the correct scale value. It should be the power of 2.
+            int scale = 1;
+            while (o.outWidth / scale / 2 >= REQUIRED_SIZE && o.outHeight / scale / 2 >= REQUIRED_SIZE)
+                scale *= 2;
+
+            // Decode with inSampleSize
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            return BitmapFactory.decodeFile(path, o2);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+
 }
