@@ -1,14 +1,23 @@
-package Model;
+package com.nwhacks.myapplication.Model;
 
 import java.util.Calendar;
 import java.util.Date;
 
 public class Budget {
-    private final double initialMonthlyBudget;
+    private static Budget budget;
+    private double initialMonthlyBudget;
     private double currentBudget;
-    private final Calendar initialBudgetSetTime;
+    private Calendar initialBudgetSetTime;
 
-    public Budget(double monthlyBudget) {
+    public static Budget getInstance() {
+        if (budget == null) {
+            budget = new Budget(0.0);
+        }
+
+        return budget;
+    }
+
+    private Budget(double monthlyBudget) {
         this.initialMonthlyBudget = monthlyBudget;
         this.currentBudget = monthlyBudget;
         this.initialBudgetSetTime = Calendar.getInstance();
@@ -42,4 +51,19 @@ public class Budget {
         return initialMonthlyBudget - currentBudget;
     }
 
+    public static void setBudget(Budget budget) {
+        Budget.budget = budget;
+    }
+
+    public void setInitialMonthlyBudget(double initialMonthlyBudget) {
+        this.initialMonthlyBudget = initialMonthlyBudget;
+    }
+
+    public void setCurrentBudget(double currentBudget) {
+        this.currentBudget = currentBudget;
+    }
+
+    public void setInitialBudgetSetTime(Calendar initialBudgetSetTime) {
+        this.initialBudgetSetTime = initialBudgetSetTime;
+    }
 }

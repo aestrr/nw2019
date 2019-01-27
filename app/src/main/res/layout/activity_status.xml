@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".InitialBudgetActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorAccent"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@android:drawable/ic_dialog_email" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Progress:"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:translationX="50dp"
+        android:translationY="100dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Status"
+        android:textAlignment="center"
+        android:textSize="36sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Initial:"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:translationX="50dp"
+        android:translationY="400dp" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Used"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:translationX="50dp"
+        android:translationY="500dp" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Remaining:"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:translationX="50dp"
+        android:translationY="600dp" />
+
+    <TextView
+        android:id="@+id/text_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textSize="30sp"
+        android:translationX="250dp"
+        android:translationY="400dp" />
+
+    <TextView
+        android:id="@+id/text_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textSize="30sp"
+        android:translationX="250dp"
+        android:translationY="500dp" />
+
+    <TextView
+        android:id="@+id/text_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textSize="30sp"
+        android:translationX="250dp"
+        android:translationY="600dp" />
+
+    <ProgressBar
+        android:id="@+id/bar_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="326dp"
+        android:layout_height="105dp"
+        android:max="100"
+        android:progress="100"
+        android:scaleY="6"
+        android:translationX="40dp"
+        android:translationY="170dp" />
+
+</android.support.design.widget.CoordinatorLayout>

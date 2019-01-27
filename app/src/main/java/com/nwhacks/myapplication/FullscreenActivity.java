@@ -1,6 +1,9 @@
 package com.nwhacks.myapplication;
 
 import android.annotation.SuppressLint;
+
+import android.graphics.drawable.AnimationDrawable;
+
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
@@ -13,12 +16,16 @@ import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -27,6 +34,7 @@ import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
+import com.nwhacks.myapplication.Model.Receipt;
 
 import org.json.JSONObject;
 
@@ -41,6 +49,7 @@ import java.util.List;
 
 import static android.content.ContentValues.TAG;
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
+
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -67,12 +76,17 @@ public class FullscreenActivity extends AppCompatActivity {
     private final Handler mHideHandler = new Handler();
     private View mContentView;
 
+
+    public AnimationDrawable bun;
+
     private static final int RC_OCR_CAPTURE = 9003;
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private Bitmap mImageBitmap;
     private String mCurrentPhotoPath;
     private ImageView mImageView;
+
+    private String danceBunny;
 
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -143,10 +157,25 @@ public class FullscreenActivity extends AppCompatActivity {
             }
         });
 
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            danceBunny = extras.getString("EXTRA_RECEIPT");
+        }
+
+        onFeeding();
+
+        Button button = findViewById(R.id.button_status);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(FullscreenActivity.this, InitialBudgetActivity.class));
+            }
+        });
+
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+        //findViewById(R.id.button).setOnTouchListener(mDelayHideTouchListener);
     }
 
     @Override
@@ -202,6 +231,53 @@ public class FullscreenActivity extends AppCompatActivity {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
+    public void onFeeding() {
+        if (danceBunny != null) {
+
+            ImageView img = (ImageView) findViewById(R.id.Happy);
+            img.setBackgroundResource(R.drawable.happy);
+            bun = (AnimationDrawable) img.getBackground();
+
+            final ImageView stand = findViewById(R.id.Bunny);
+            stand.setVisibility(mContentView.INVISIBLE);
+
+            bun.run();
+        }
+    }
+
+
+
+    @Override
+    public void onEnterAnimationComplete() {
+        super.onEnterAnimationComplete();
+        try {
+            Thread.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        findViewById(R.id.Bunny).setVisibility(mContentView.VISIBLE);
+    }
+
+//
+//    AnimationDrawable rocketAnimation;
+//
+//    public void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.main);
+//
+//        ImageView rocketImage = (ImageView) findViewById(R.id.Bunny);
+//        rocketImage.setBackgroundResource(R.drawable.bunny_happy);
+//        rocketAnimation = (AnimationDrawable) rocketImage.getBackground();
+//
+//        rocketImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                rocketAnimation.start();
+//            }
+//        });
+//    }
+
+
     public void openCamera(View view) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
@@ -223,6 +299,11 @@ public class FullscreenActivity extends AppCompatActivity {
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
         }
+    }
+
+    public void openReceipt(View view) {
+        Intent intent = new Intent(FullscreenActivity.this, ReceiptActivity.class);
+        startActivity(intent);
     }
 
     private File createImageFile() throws IOException {
@@ -295,8 +376,10 @@ public class FullscreenActivity extends AppCompatActivity {
                     System.out.println("textBlocks: " + textBlock.getValue());
                     //System.out.println("textBlocks: " + textBlocks.valueAt(i).getValue());
                 }
-                JSONObject receipts = OcrStaticProcessor.parseDetectedItems(textBlocks);
-                System.out.println(receipts);
+                //JSONObject receipts = OcrStaticProcessor.parseDetectedItems(textBlocks);
+                Intent i = new Intent(FullscreenActivity.this, ReceiptActivity.class);
+                i.putExtra("EXTRA_JSON", OcrStaticProcessor.receiptJson.toString());
+                startActivity(i);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -326,4 +409,5 @@ public class FullscreenActivity extends AppCompatActivity {
         return null;
 
     }
+
 }

@@ -14,6 +14,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".ReceiptActivity"
+            android:label="@string/title_activity_receipt"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -22,9 +26,17 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
 
+        <activity
+            android:name=".InitialBudgetActivity"
+            android:label="Budget Bunny"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".StatusActivity"
+            android:label="@string/title_activity_status"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".FullscreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -36,10 +48,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name="com.nwhacks.myapplication.OcrCaptureActivity"
+        <activity
+            android:name=".OcrCaptureActivity"
             android:label="Read Text" />
-
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package Model;
+package com.nwhacks.myapplication.Model;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class JSONToRecieptParser {
+public class JSONToReceiptParser {
 
     public static Receipt parseJson(JSONObject jsonObject) throws JSONException {
        String companyName = jsonObject.getString("companyName");
        String transactionDateString = jsonObject.getString("transactionDate");
-       SimpleDateFormat format = new SimpleDateFormat("YYYY/MM/dd");
+       SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
        Date transactionDate = new Date();
        try {
            transactionDate = format.parse(transactionDateString);
