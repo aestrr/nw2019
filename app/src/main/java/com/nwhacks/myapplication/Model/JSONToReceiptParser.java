@@ -15,7 +15,7 @@ public class JSONToReceiptParser {
     public static Receipt parseJson(JSONObject jsonObject) throws JSONException {
        String companyName = jsonObject.getString("companyName");
        String transactionDateString = jsonObject.getString("transactionDate");
-       SimpleDateFormat format = new SimpleDateFormat("YYYY/MM/dd");
+       SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
        Date transactionDate = new Date();
        try {
            transactionDate = format.parse(transactionDateString);
