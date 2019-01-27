@@ -65,29 +65,32 @@ public class OcrStaticProcessor {
     }
 
     private static Date getTransactionDate(SparseArray<TextBlock> blocks) {
-        String dateTemplate = "\\d{2}\\/\\d{2}\\/\\d{2,4}";
+        String dateTemplate = "^\\d{2}\\/\\d{2}\\/\\d{2,4}$";
         Pattern datePattern = Pattern.compile(dateTemplate);
+        SimpleDateFormat format0 = new SimpleDateFormat("MM/dd/yyyy");
+        SimpleDateFormat format1 = new SimpleDateFormat("MM/dd/yy");
+        SimpleDateFormat format2 = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat format3 = new SimpleDateFormat("dd/MM/yy");
+        SimpleDateFormat formats[] = {format0, format1, format2, format3};
         for (int bi=0; bi < blocks.size(); bi++) {
-            Matcher matcher = datePattern.matcher(blocks.valueAt(bi).getValue());
-            for (int m = 0; m < matcher.groupCount(); m++) {
-                String word = matcher.group(m);
-                SimpleDateFormat format0 = new SimpleDateFormat("MM/dd/yyyyy");
-                SimpleDateFormat format1 = new SimpleDateFormat("MM/dd/yy");
-                SimpleDateFormat format2 = new SimpleDateFormat("dd/MM/yyyy");
-                SimpleDateFormat format3 = new SimpleDateFormat("dd/MM/yy");
-                SimpleDateFormat formats[] = {format0, format1, format2, format3};
-                Date parsedDate;
-                for (SimpleDateFormat f : formats) {
-                    try {
-                        parsedDate = format0.parse(word);
-                        if (parsedDate != null) {
-                            return parsedDate;
+            List<?extends Text> lines = blocks.valueAt(bi).getComponents();
+            for (int li=0; li < lines.size(); li++) {
+                List<?extends Text> elements = lines.get(li).getComponents();
+                for (int ei=0; ei < elements.size(); ei++) {
+                    Matcher matcher = datePattern.matcher(elements.get(ei).getValue());
+                    String word = matcher.group(0);
+                    Date parsedDate;
+                    for (SimpleDateFormat f : formats) {
+                        try {
+                            parsedDate = f.parse(word);
+                            if (parsedDate != null) {
+                                return parsedDate;
+                            }
+                        } catch (ParseException e) {
+                            System.out.println(String.format("Can't parse date %s", word));
                         }
-                    } catch (ParseException e) {
-                        System.out.println(String.format("Can't parse date %s", word));
                     }
                 }
-
             }
         }
         System.out.println("No date found on receipt, returning current date");
