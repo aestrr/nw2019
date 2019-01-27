@@ -33,7 +33,6 @@ import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
-import com.nwhacks.myapplication.Model.Receipt;
 
 import org.json.JSONObject;
 
@@ -75,7 +74,6 @@ public class FullscreenActivity extends AppCompatActivity {
     private final Handler mHideHandler = new Handler();
     private View mContentView;
 
-    private String danceBunny;
 
     public AnimationDrawable bun;
 
@@ -155,13 +153,6 @@ public class FullscreenActivity extends AppCompatActivity {
             }
         });
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            danceBunny = extras.getString("EXTRA_RECEIPT");
-        }
-
-        onFeeding();
-
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
@@ -221,19 +212,19 @@ public class FullscreenActivity extends AppCompatActivity {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
-    public void onFeeding() {
-        if (danceBunny != null){
 
-            System.out.println("OOOOOOHHH HEWEHWEWEHEHEE");
-            ImageView img = (ImageView) findViewById(R.id.Happy);
-            img.setBackgroundResource(R.drawable.happy);
-            bun = (AnimationDrawable) img.getBackground();
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
 
-            final ImageView stand = findViewById(R.id.Bunny);
-            stand.setVisibility(mContentView.INVISIBLE);
+        ImageView img = (ImageView) findViewById(R.id.Happy);
+        img.setBackgroundResource(R.drawable.happy);
+        bun = (AnimationDrawable) img.getBackground();
 
-            bun.run();
-        }
+        final ImageView stand = findViewById(R.id.Bunny);
+        stand.setVisibility(mContentView.INVISIBLE);
+
+        bun.run();
 
     }
 
@@ -291,11 +282,6 @@ public class FullscreenActivity extends AppCompatActivity {
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
         }
-    }
-
-    public void openReceipt(View view) {
-        Intent intent = new Intent(FullscreenActivity.this, ReceiptActivity.class);
-        startActivity(intent);
     }
 
     private File createImageFile() throws IOException {
@@ -368,11 +354,8 @@ public class FullscreenActivity extends AppCompatActivity {
                     System.out.println("textBlocks: " + textBlock.getValue());
                     //System.out.println("textBlocks: " + textBlocks.valueAt(i).getValue());
                 }
-                //JSONObject receipts = OcrStaticProcessor.parseDetectedItems(textBlocks);
-
-                Intent i = new Intent(FullscreenActivity.this, ReceiptActivity.class);
-                i.putExtra("EXTRA_JSON",OcrStaticProcessor.receiptJson.toString());
-                startActivity(i);
+                JSONObject receipts = OcrStaticProcessor.parseDetectedItems(textBlocks);
+                System.out.println(receipts);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);

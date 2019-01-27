@@ -11,8 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class InitialBudgetActivity extends AppCompatActivity {
-    private EditText text;
     public String sMonthlyBudget;
+    private EditText text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,15 +30,14 @@ public class InitialBudgetActivity extends AppCompatActivity {
             }
         });
 
-        Button button = findViewById(R.id.button2);
         text = findViewById(R.id.initial_budget);
+        Button button = findViewById(R.id.button2);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent();
-                sMonthlyBudget = text.getText().toString();
-                intent.putExtra("EXTRA_INITIAL_BALANCE", sMonthlyBudget);
-                setResult(RESULT_OK, intent);
+                Intent intent = new Intent(InitialBudgetActivity.this, StatusActivity.class);
+                intent.putExtra("key", text.getText().toString());
+                startActivity(intent);
                 finish();
             }
         });
