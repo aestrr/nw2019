@@ -178,10 +178,24 @@ public class FullscreenActivity extends AppCompatActivity {
             }
         });
 
-        // Upon interacting with UI controls, delay any scheduled hide()
-        // operations to prevent the jarring behavior of controls going away
-        // while interacting with the UI.
-        //findViewById(R.id.button).setOnTouchListener(mDelayHideTouchListener);
+        int percentRemaining = Budget.getInstance().getPercentRemaining();
+        if (percentRemaining > 0) {
+            ImageView heart = findViewById(R.id.imageView);
+            heart.setX(300);
+            heart.setY(700);
+        }
+
+        if (percentRemaining > 33) {
+            ImageView heart2 = findViewById(R.id.imageView2);
+            heart2.setX(590);
+            heart2.setY(700);
+        }
+
+        if (percentRemaining > 66) {
+            ImageView heart3 = findViewById(R.id.imageView3);
+            heart3.setX(880);
+            heart3.setY(700);
+        }
     }
 
     @Override

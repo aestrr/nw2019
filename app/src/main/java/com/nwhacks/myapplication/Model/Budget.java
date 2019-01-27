@@ -67,4 +67,12 @@ public class Budget {
     public void setInitialBudgetSetTime(Calendar initialBudgetSetTime) {
         this.initialBudgetSetTime = initialBudgetSetTime;
     }
+
+    public int getPercentRemaining() {
+        if (initialMonthlyBudget == 0) {
+            return 100;
+        } else {
+            return (int) ((currentBudget / initialMonthlyBudget) * 100);
+        }
+    }
 }

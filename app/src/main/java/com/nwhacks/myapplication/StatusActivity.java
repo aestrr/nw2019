@@ -55,7 +55,7 @@ public class StatusActivity extends AppCompatActivity {
         text3.setText(remainingBudget.toString());
 
         ProgressBar bar = findViewById(R.id.bar_progress);
-        bar.setProgress((int) ((remainingBudget / initialBudget) * 100));
+        bar.setProgress(Budget.getInstance().getPercentRemaining());
 
 
 //
