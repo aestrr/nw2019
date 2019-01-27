@@ -78,16 +78,18 @@ public class OcrStaticProcessor {
                 List<?extends Text> elements = lines.get(li).getComponents();
                 for (int ei=0; ei < elements.size(); ei++) {
                     Matcher matcher = datePattern.matcher(elements.get(ei).getValue());
-                    String word = matcher.group(0);
-                    Date parsedDate;
-                    for (SimpleDateFormat f : formats) {
-                        try {
-                            parsedDate = f.parse(word);
-                            if (parsedDate != null) {
-                                return parsedDate;
+                    if (matcher.matches()) {
+                        String word = matcher.group(0);
+                        Date parsedDate;
+                        for (SimpleDateFormat f : formats) {
+                            try {
+                                parsedDate = f.parse(word);
+                                if (parsedDate != null) {
+                                    return parsedDate;
+                                }
+                            } catch (ParseException e) {
+                                System.out.println(String.format("Can't parse date %s", word));
                             }
-                        } catch (ParseException e) {
-                            System.out.println(String.format("Can't parse date %s", word));
                         }
                     }
                 }
