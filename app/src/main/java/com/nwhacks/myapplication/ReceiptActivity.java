@@ -34,18 +34,17 @@ public class ReceiptActivity extends AppCompatActivity {
         if (extras != null) {
             jsonString = extras.getString("EXTRA_JSON");
             System.out.println(jsonString);
+            parseReceipts();
+            TextView tv1 = (TextView) findViewById(R.id.textView1);
+            TextView tv2 = (TextView) findViewById(R.id.textView2);
+            TextView tv3 = (TextView) findViewById(R.id.textView3);
+            Receipt r = receiptManager.getReceipt();
+            System.out.println("transactionDate: " + r.getTransactionDate());
+            DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+            tv1.setText(df.format(r.getTransactionDate()));
+            tv2.setText(r.getCompanyName());
+            tv3.setText(Double.toString(r.getTotalCost()));
         }
-
-        parseReceipts();
-        TextView tv1 = (TextView) findViewById(R.id.textView1);
-        TextView tv2 = (TextView) findViewById(R.id.textView2);
-        TextView tv3 = (TextView) findViewById(R.id.textView3);
-        Receipt r = receiptManager.getReceipt();
-        System.out.println("transactionDate: " + r.getTransactionDate());
-        DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
-        tv1.setText(df.format(r.getTransactionDate()));
-        tv2.setText(r.getCompanyName());
-        tv3.setText(Double.toString(r.getTotalCost()));
     }
 
     public void sendToBunny(View view) {

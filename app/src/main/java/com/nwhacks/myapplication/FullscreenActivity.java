@@ -251,7 +251,7 @@ public class FullscreenActivity extends AppCompatActivity {
     public void onEnterAnimationComplete() {
         super.onEnterAnimationComplete();
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

@@ -31,7 +31,8 @@
         android:onClick="sendToBunny"
         android:text="Feed"
         app:layout_anchor="@+id/include"
-        app:layout_anchorGravity="right|center" />
+        app:layout_anchorGravity="top|center"
+        android:translationY="100dp"/>
 
     <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
@@ -71,38 +72,35 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text=" Date "
-                android:layout_margin="1dp"
                 android:layout_column="0"
+                android:layout_margin="1dp"
                 android:background="#FFFFFF"
-                android:textStyle="bold"
                 android:gravity="center"
-                />
+                android:text=" Date "
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textStyle="bold" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Company "
-                android:layout_margin="1dp"
                 android:layout_column="1"
-                android:background="#FFFFFF"
-                android:gravity="center"
-                android:textStyle="bold"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Total Cost"
                 android:layout_margin="1dp"
                 android:background="#FFFFFF"
                 android:gravity="center"
-                android:textStyle="bold"
+                android:text="Company "
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_column="2"
-                />
+                android:layout_margin="1dp"
+                android:background="#FFFFFF"
+                android:gravity="center"
+                android:text="Total Cost"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textStyle="bold" />
         </TableRow>
 
         <TableRow
@@ -117,7 +115,7 @@
                 android:id="@+id/textView1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_margin="1dp"
                 android:layout_column="0"
                 android:background="#FFFFFF"
@@ -128,7 +126,7 @@
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_margin="1dp"
                 android:layout_column="1"
                 android:background="#FFFFFF"
@@ -137,9 +135,9 @@
 
             <TextView
                 android:id="@+id/textView3"
-                android:layout_width="wrap_content"
+                android:layout_width="10dp"
                 android:layout_height="match_parent"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_margin="1dp"
                 android:background="#FFFFFF"
                 android:gravity="center"
