@@ -34,38 +34,37 @@
         app:layout_anchorGravity="top|center"
         android:translationY="100dp"/>
 
-    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <TableLayout
 
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:stretchColumns="0,1,2"
-        android:gravity="center">
+        android:gravity="center"
+        android:stretchColumns="0,1,2">
 
         <TableRow
-            android:background="#FFFFFF"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_margin="1dp"
             android:layout_weight="1"
-            >
+            android:background="#FFFFFF">
+
             <TableRow
-                android:background="#000000"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:layout_margin="1dp"
                 android:layout_weight="1"
-                >
-
+                android:background="#000000">
 
 
             </TableRow>
         </TableRow>
+
         <TableRow
-            android:background="#000000"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_margin="1dp"
             android:layout_weight="1"
+            android:background="#000000"
 
             >
 
@@ -104,44 +103,41 @@
         </TableRow>
 
         <TableRow
-            android:background="#000000"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_margin="1dp"
             android:layout_weight="1"
-            >
+            android:background="#000000">
 
             <TextView
                 android:id="@+id/textView1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_margin="1dp"
                 android:layout_column="0"
+                android:layout_margin="1dp"
                 android:background="#FFFFFF"
                 android:gravity="center"
-                />
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_margin="1dp"
                 android:layout_column="1"
+                android:layout_margin="1dp"
                 android:background="#FFFFFF"
                 android:gravity="center"
-                />
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
                 android:id="@+id/textView3"
                 android:layout_width="10dp"
                 android:layout_height="match_parent"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_column="2"
                 android:layout_margin="1dp"
                 android:background="#FFFFFF"
                 android:gravity="center"
-                android:layout_column="2" />
+                android:textAppearance="?android:attr/textAppearanceMedium" />
         </TableRow>
 
     </TableLayout>

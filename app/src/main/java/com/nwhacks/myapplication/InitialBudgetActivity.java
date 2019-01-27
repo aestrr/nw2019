@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.nwhacks.myapplication.Model.Budget;
+
 public class InitialBudgetActivity extends AppCompatActivity {
     public String sMonthlyBudget;
     private EditText text;
@@ -36,7 +38,9 @@ public class InitialBudgetActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(InitialBudgetActivity.this, StatusActivity.class);
-                intent.putExtra("key", text.getText().toString());
+                String initialBudgetString = text.getText().toString();
+                Double initialBudgetDouble = Double.parseDouble(initialBudgetString);
+                Budget.getInstance().setInitialMonthlyBudget(initialBudgetDouble);
                 startActivity(intent);
                 finish();
             }

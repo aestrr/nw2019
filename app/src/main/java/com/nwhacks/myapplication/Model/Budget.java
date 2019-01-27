@@ -48,7 +48,7 @@ public class Budget {
     }
 
     public double getBudgetUsed() {
-        return initialMonthlyBudget - currentBudget;
+        return Math.abs(currentBudget - initialMonthlyBudget);
     }
 
     public static void setBudget(Budget budget) {
@@ -57,6 +57,7 @@ public class Budget {
 
     public void setInitialMonthlyBudget(double initialMonthlyBudget) {
         this.initialMonthlyBudget = initialMonthlyBudget;
+        this.currentBudget = initialMonthlyBudget;
     }
 
     public void setCurrentBudget(double currentBudget) {
