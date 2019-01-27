@@ -151,8 +151,8 @@ public class OcrStaticProcessor {
         String pItemTemplate = "(.*)\\s+\\$?(\\d+\\.\\d{2})";
         Pattern pItemPattern = Pattern.compile(pItemTemplate);
         for (int bi=0; bi < blocks.size(); bi++) {
-            List<?extends Text> block = blocks.valueAt(bi).getComponents();
-            String strLine = blocks.get(blocks.keyAt(bi)).getValue();
+            // List<?extends Text> block = blocks.valueAt(bi).getComponents();
+            String strLine = blocks.valueAt(bi).getValue();
             Matcher matcherSubTotal = subTotalPattern.matcher(strLine);
             System.out.println("strLine: " + strLine);
             if (matcherSubTotal.matches() && purchasedItems.length() > 0) {
