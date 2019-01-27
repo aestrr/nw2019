@@ -133,8 +133,8 @@ public class OcrStaticProcessor {
     }
 
     private static Date getTransactionDate(List<Text> textLines) {
-        String dateTemplate4 = "^\\d{2}\\/\\d{2}\\/\\d{4}$";
-        String dateTemplate2 = "^\\d{2}\\/\\d{2}\\/\\d{2}$";
+        String dateTemplate4 = "\\d{2}\\/\\d{2}\\/\\d{4}";
+        String dateTemplate2 = "\\d{2}\\/\\d{2}\\/\\d{2}";
         Pattern datePattern4 = Pattern.compile(dateTemplate4);
         Pattern datePattern2 = Pattern.compile(dateTemplate2);
         SimpleDateFormat format0 = new SimpleDateFormat("MM/dd/yyyy");
@@ -149,7 +149,7 @@ public class OcrStaticProcessor {
                 Matcher matcher4 = datePattern4.matcher(elements[ei]);
                 Matcher matcher2 = datePattern2.matcher(elements[ei]);
                 if (matcher4.matches()) {
-                    String word = matcher4.group(0);
+                    String word = elements[ei];
                     Date parsedDate;
                     for (SimpleDateFormat f : formats4) {
                        try {
@@ -163,7 +163,7 @@ public class OcrStaticProcessor {
                     }
                 }
                 if (matcher2.matches()) {
-                    String word = matcher2.group(0);
+                    String word = elements[ei];
                     Date parsedDate;
                     for (SimpleDateFormat f : formats2) {
                         try {
