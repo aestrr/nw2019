@@ -2,6 +2,7 @@ package com.nwhacks.myapplication;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -19,6 +20,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
@@ -252,8 +254,36 @@ public class FullscreenActivity extends AppCompatActivity {
                 Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
                // mImageView.setImageBitmap(bitmap);
                 TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
+
+                if (!textRecognizer.isOperational()) {
+                    // Note: The first time that an app using a Vision API is installed on a
+                    // device, GMS will download a native libraries to the device in order to do detection.
+                    // Usually this completes before the app is run for the first time.  But if that
+                    // download has not yet completed, then the above call will not detect any text,
+                    // barcodes, or faces.
+                    //
+                    // isOperational() can be used to check if the required native libraries are currently
+                    // available.  The detectors will automatically become operational once the library
+                    // downloads complete on device.
+                    Log.w(TAG, "Detector dependencies are not yet available.");
+
+                    // Check for low storage.  If there is low storage, the native library will not be
+                    // downloaded, so detection will not become operational.
+                    IntentFilter lowstorageFilter = new IntentFilter(Intent.ACTION_DEVICE_STORAGE_LOW);
+                    boolean hasLowStorage = registerReceiver(null, lowstorageFilter) != null;
+
+                    if (hasLowStorage) {
+                        Toast.makeText(this, R.string.low_storage_error, Toast.LENGTH_LONG).show();
+                        Log.w(TAG, getString(R.string.low_storage_error));
+                    }
+                }
+
                 Frame imageFrame = new Frame.Builder().setBitmap(bitmap).build();
                 SparseArray<TextBlock> textBlocks = textRecognizer.detect(imageFrame);
+                System.out.println("all textblocks: " + textBlocks.toString());
+                for (int i = 0; i < textBlocks.size(); i++) {
+                    System.out.println("textBlocks: " + textBlocks.valueAt(i).getValue());
+                }
                 JSONObject receipts = OcrStaticProcessor.parseDetectedItems(textBlocks);
                 System.out.println(receipts);
             }
