@@ -20,7 +20,9 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_receipt" />
+    <include
+        android:id="@+id/include"
+        layout="@layout/content_receipt" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -29,5 +31,14 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@android:drawable/ic_dialog_email" />
+
+    <Button
+        android:id="@+id/feed_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="sendToBunny"
+        android:text="Feed"
+        app:layout_anchor="@+id/include"
+        app:layout_anchorGravity="right|center" />
 
 </android.support.design.widget.CoordinatorLayout>

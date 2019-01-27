@@ -31,13 +31,20 @@ public class OcrStaticProcessor {
         JSONObject item = new JSONObject();
         try {
             receipt.put("companyName", "FRESH ST MARKET");
-            receipt.put("transactionData", "2018/06/11");
-            receipt.put("totalCost", "30.99");
-            item.put("FAM PK BNLS SKNL CHICKEN THIG", "24.16");
-            item.put("LA GRILLE SEASNG-MNTRL STK SP", "6.79");
-            item.put("BAG CHARGE - PLASTIC", "0.04");
+            receipt.put("transactionDate", "2018/06/11");
+            receipt.put("totalCost", 30.99);
+            item.put("productName", "FAM PK BNLS SKNL CHICKEN THIG");
+            item.put("productCost", 24.16);
             items.put(item);
-            receipt.put("Purchased Items", items);
+            item = new JSONObject();
+            item.put("productName", "LA GRILLE SEASNG-MNTRL STK SP");
+            item.put("productCost", 6.79);
+            items.put(item);
+            item = new JSONObject();
+            item.put("productName", "BAG CHARGE - PLASTIC");
+            item.put("productCost", 0.04);
+            items.put(item);
+            receipt.put("purchasedItems", items);
             return receipt;
         } catch (Exception e) {
             e.printStackTrace();

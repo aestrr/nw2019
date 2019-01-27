@@ -75,6 +75,7 @@ public class FullscreenActivity extends AppCompatActivity {
     private final Handler mHideHandler = new Handler();
     private View mContentView;
 
+    private String danceBunny;
 
     public AnimationDrawable bun;
 
@@ -154,6 +155,13 @@ public class FullscreenActivity extends AppCompatActivity {
             }
         });
 
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            danceBunny = extras.getString("EXTRA_RECEIPT");
+        }
+
+        onFeeding();
+
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
@@ -213,19 +221,19 @@ public class FullscreenActivity extends AppCompatActivity {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
+    public void onFeeding() {
+        if (danceBunny != null){
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
+            System.out.println("OOOOOOHHH HEWEHWEWEHEHEE");
+            ImageView img = (ImageView) findViewById(R.id.Happy);
+            img.setBackgroundResource(R.drawable.happy);
+            bun = (AnimationDrawable) img.getBackground();
 
-        ImageView img = (ImageView) findViewById(R.id.Happy);
-        img.setBackgroundResource(R.drawable.happy);
-        bun = (AnimationDrawable) img.getBackground();
+            final ImageView stand = findViewById(R.id.Bunny);
+            stand.setVisibility(mContentView.INVISIBLE);
 
-        final ImageView stand = findViewById(R.id.Bunny);
-        stand.setVisibility(mContentView.INVISIBLE);
-
-        bun.run();
+            bun.run();
+        }
 
     }
 
