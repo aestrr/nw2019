@@ -122,18 +122,21 @@ public class OcrStaticProcessor {
 
     private static JSONArray getPurchasedItems(SparseArray<TextBlock> blocks) {
         JSONArray purchasedItems = new JSONArray();
-        String subTotalTemplate = "\\s*Sub\\s+Total\\s*";
+        String subTotalTemplate = ".*\\s*Sub\\s+Total\\s*.*";
+        Pattern subTotalPattern = Pattern.compile(subTotalTemplate);
         String pItemTemplate = "(.*)\\s+\\$?(\\d+\\.\\d{2})[^\\d]*";
         Pattern pItemPattern = Pattern.compile(pItemTemplate);
         for (int bi=0; bi < blocks.size(); bi++) {
             List<?extends Text> block = blocks.valueAt(bi).getComponents();
             for (int li=0; li < block.size(); li++) {
                 String strLine = block.get(li).getValue();
-                if (Pattern.matches(strLine, subTotalTemplate) && purchasedItems.length() > 0) {
+                Matcher matcher = subTotalPattern.matcher(strLine);
+                if (matcher.matches() && purchasedItems.length() > 0) {
                     System.out.println("Hit sub total line, stopped looking for purchasedItems");
                     return purchasedItems;
                 }
-                if (Pattern.matches(strLine, pItemTemplate)) {
+                Matcher matcher = pItemPattern.matcher(strLine);
+                if (matcher.matches()) {
                     Matcher matcher = pItemPattern.matcher(strLine);
                     String purchasedItem = matcher.group(0);
                     Double purchasedValue = Double.parseDouble(matcher.group(1));
