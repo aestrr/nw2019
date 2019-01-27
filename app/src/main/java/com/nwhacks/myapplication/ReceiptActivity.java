@@ -7,12 +7,16 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
 import com.nwhacks.myapplication.Model.JSONToReceiptParser;
 import com.nwhacks.myapplication.Model.Receipt;
 import com.nwhacks.myapplication.Model.ReceiptManager;
 
 import org.json.JSONObject;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 public class ReceiptActivity extends AppCompatActivity {
 
@@ -26,14 +30,6 @@ public class ReceiptActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             jsonString = extras.getString("EXTRA_JSON");
@@ -41,7 +37,15 @@ public class ReceiptActivity extends AppCompatActivity {
         }
 
         parseReceipts();
-
+        TextView tv1 = (TextView) findViewById(R.id.textView1);
+        TextView tv2 = (TextView) findViewById(R.id.textView2);
+        TextView tv3 = (TextView) findViewById(R.id.textView3);
+        Receipt r = receiptManager.getReceipt();
+        System.out.println("transactionDate: " + r.getTransactionDate());
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+        tv1.setText(df.format(r.getTransactionDate()));
+        tv2.setText(r.getCompanyName());
+        tv3.setText(Double.toString(r.getTotalCost()));
     }
 
     public void sendToBunny(View view) {
