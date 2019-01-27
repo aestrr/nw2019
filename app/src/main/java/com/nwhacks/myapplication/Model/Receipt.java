@@ -1,4 +1,4 @@
-package Model;
+package com.nwhacks.myapplication.Model;
 
 import android.media.Image;
 
@@ -15,7 +15,7 @@ public class Receipt {
     private final Date transactionDate;
 
     public static Receipt parseImageToReciept(Image image) throws JSONException, ParseException {
-        return parseDetectedItems(image);
+        return null; // TODO FIX
     }
 
     public void printReceipt() {

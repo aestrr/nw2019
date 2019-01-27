@@ -1,4 +1,4 @@
-package Model;
+package com.nwhacks.myapplication.Model;
 
 import org.json.JSONArray;
 import org.json.JSONException;
