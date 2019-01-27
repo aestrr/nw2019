@@ -7,9 +7,12 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.nwhacks.myapplication.Model.JSONToReceiptParser;
+import com.nwhacks.myapplication.Model.Product;
 import com.nwhacks.myapplication.Model.Receipt;
 import com.nwhacks.myapplication.Model.ReceiptManager;
 
@@ -17,6 +20,8 @@ import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReceiptActivity extends AppCompatActivity {
 
@@ -38,7 +43,18 @@ public class ReceiptActivity extends AppCompatActivity {
             TextView tv1 = (TextView) findViewById(R.id.textView1);
             TextView tv2 = (TextView) findViewById(R.id.textView2);
             TextView tv3 = (TextView) findViewById(R.id.textView3);
+            Spinner dropdown = findViewById(R.id.spinner1);
             Receipt r = receiptManager.getReceipt();
+
+            List<String> items = new ArrayList<>();
+
+            for (Product x : r.getProductList()) {
+                items.add(x.getName() + ": $" + x.getCost());
+            }
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+            dropdown.setAdapter(adapter);
+
             System.out.println("transactionDate: " + r.getTransactionDate());
             DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
             tv1.setText(df.format(r.getTransactionDate()));
@@ -66,5 +82,9 @@ public class ReceiptActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+
+
+
 
 }

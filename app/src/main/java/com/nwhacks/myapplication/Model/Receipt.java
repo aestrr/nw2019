@@ -14,10 +14,6 @@ public class Receipt {
     private final String companyName;
     private final Date transactionDate;
 
-    public static Receipt parseImageToReciept(Image image) throws JSONException, ParseException {
-        return null; // TODO FIX
-    }
-
     public void printReceipt() {
         System.out.println("");
         System.out.println("Reciept");
