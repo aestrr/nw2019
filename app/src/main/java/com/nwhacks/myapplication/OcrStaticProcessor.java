@@ -152,7 +152,7 @@ public class OcrStaticProcessor {
         Pattern pItemPattern = Pattern.compile(pItemTemplate);
         for (int bi=0; bi < blocks.size(); bi++) {
             List<?extends Text> block = blocks.valueAt(bi).getComponents();
-            System.out.println("strBlock: " + blocks.get(bi).getValue());
+            System.out.println("strBlock: " + blocks.get(blocks.keyAt(bi)));
             for (int li=0; li < block.size(); li++) {
                 String strLine = block.get(li).getValue();
                 Matcher matcherSubTotal = subTotalPattern.matcher(strLine);
