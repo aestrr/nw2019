@@ -92,8 +92,6 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
 
     public Date getTransactionDate(SparseArray<TextBlock> blocks) throws ParseException {
         String dateTemplate = "\\d{2}\\/\\d{2}\\/\\d{2,4}";
-        Pattern datePattern = Pattern.compile(dateTemplate);
-        Matcher matcher;
         for (int bi=0; bi < blocks.size(); bi++) {
             List<?extends Text> block = blocks.valueAt(bi).getComponents();
             for (int li=0; li < block.size(); li++) {
@@ -104,12 +102,16 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
                     if (Pattern.matches(word, dateTemplate)) {
                         {
                             SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyyy");
-                            return format.parse(word);
+                            Date parsedDate = format.parse(word);
+                            if (parsedDate != null) {
+                                return parsedDate;
+                            }
                         }
                     }
                 }
             }
         }
+        System.out.println("Date not found on receipt");
         return new Date();
     }
 
@@ -130,6 +132,7 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
                 }
             }
         }
+        System.out.println("Total cost not found on receipt");
         return 0.0;
     }
 
@@ -152,15 +155,12 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
                 }
             }
         }
+        if (purchasedItems.length() < 1) {
+            System.out.println("No purchased items found on receipt");
+        }
         return purchasedItems;
     }
 
-
-    public getTotalCost()
-
-    /**
-     * Frees the resources associated with this detection processor.
-     */
     @Override
     public void release() {
         mGraphicOverlay.clear();
