@@ -12,6 +12,10 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -19,20 +23,48 @@ import java.util.regex.Pattern;
 
 public class OcrStaticProcessor {
 
+    public static Comparator<Text> TextComparator
+            = new Comparator<Text>() {
+        @Override
+        public int compare(Text t1, Text t2) {
+            int diffOfTops = t1.getBoundingBox().top - t2.getBoundingBox().top;
+            int diffOfLefts = t1.getBoundingBox().left - t2.getBoundingBox().left;
+
+            if (diffOfTops != 0) {
+                return diffOfTops;
+            }
+            return diffOfLefts;
+        }
+    };
+
     public static JSONObject parseDetectedItems(SparseArray<TextBlock> blocks) {
         int nTextBlocks = blocks.size();
         if (nTextBlocks < 1) {
             return null;
         }
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-        String companyName = blocks.valueAt(0).getValue();
 
-        Date transactionDate = getTransactionDate(blocks);
+        List<Text> textLines = new ArrayList<>();
+
+        for (int i = 0; i < blocks.size(); i++) {
+            TextBlock textBlock = blocks.valueAt(i);
+
+            List<? extends Text> textComponents = textBlock.getComponents();
+            textLines.addAll(textComponents);
+        }
+
+
+        Collections.sort(textLines, TextComparator);
+
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        String companyName = textLines.get(0).getValue();
+
+        Date transactionDate = getTransactionDate(textLines);
 
         String strTransactionDate = dateFormat.format(transactionDate);
-        Double totalCost = getTotalCost(blocks);
-        JSONArray purchasedItems = getPurchasedItems(blocks);
+        Double totalCost = getTotalCost(textLines);
+        JSONArray purchasedItems = getPurchasedItems(textLines);
 
         JSONObject receipt = new JSONObject();
 
@@ -64,7 +96,7 @@ public class OcrStaticProcessor {
         return receipt;
     }
 
-    private static Date getTransactionDate(SparseArray<TextBlock> blocks) {
+    private static Date getTransactionDate(List<Text> textLines) {
         String dateTemplate4 = "^\\d{2}\\/\\d{2}\\/\\d{4}$";
         String dateTemplate2 = "^\\d{2}\\/\\d{2}\\/\\d{2}$";
         Pattern datePattern4 = Pattern.compile(dateTemplate4);
@@ -75,39 +107,36 @@ public class OcrStaticProcessor {
         SimpleDateFormat format3 = new SimpleDateFormat("dd/MM/yy");
         SimpleDateFormat formats4[] = {format0, format2};
         SimpleDateFormat formats2[] = {format1, format3};
-        for (int bi=0; bi < blocks.size(); bi++) {
-            List<?extends Text> lines = blocks.valueAt(bi).getComponents();
-            for (int li=0; li < lines.size(); li++) {
-                List<?extends Text> elements = lines.get(li).getComponents();
-                for (int ei=0; ei < elements.size(); ei++) {
-                    Matcher matcher4 = datePattern4.matcher(elements.get(ei).getValue());
-                    Matcher matcher2 = datePattern2.matcher(elements.get(ei).getValue());
-                    if (matcher4.matches()) {
-                        String word = matcher4.group(0);
-                        Date parsedDate;
-                        for (SimpleDateFormat f : formats4) {
-                            try {
-                                parsedDate = f.parse(word);
-                                if (parsedDate != null) {
-                                    return parsedDate;
-                                }
-                            } catch (ParseException e) {
-                                System.out.println(String.format("Can't parse date %s", word));
-                            }
+        for (int li=0; li < textLines.size(); li++) {
+            List<?extends Text> elements = textLines.get(li).getComponents();
+            for (int ei=0; ei < elements.size(); ei++) {
+                Matcher matcher4 = datePattern4.matcher(elements.get(ei).getValue());
+                Matcher matcher2 = datePattern2.matcher(elements.get(ei).getValue());
+                if (matcher4.matches()) {
+                    String word = matcher4.group(0);
+                    Date parsedDate;
+                    for (SimpleDateFormat f : formats4) {
+                       try {
+                           parsedDate = f.parse(word);
+                           if (parsedDate != null) {
+                                return parsedDate;
+                           }
+                       } catch (ParseException e) {
+                           System.out.println(String.format("Can't parse date %s", word));
                         }
                     }
-                    if (matcher2.matches()) {
-                        String word = matcher2.group(0);
-                        Date parsedDate;
-                        for (SimpleDateFormat f : formats2) {
-                            try {
-                                parsedDate = f.parse(word);
-                                if (parsedDate != null) {
-                                    return parsedDate;
-                                }
-                            } catch (ParseException e) {
-                                System.out.println(String.format("Can't parse date %s", word));
+                }
+                if (matcher2.matches()) {
+                    String word = matcher2.group(0);
+                    Date parsedDate;
+                    for (SimpleDateFormat f : formats2) {
+                        try {
+                            parsedDate = f.parse(word);
+                            if (parsedDate != null) {
+                                return parsedDate;
                             }
+                        } catch (ParseException e) {
+                            System.out.println(String.format("Can't parse date %s", word));
                         }
                     }
                 }
@@ -117,26 +146,22 @@ public class OcrStaticProcessor {
         return new Date();
     }
 
-    private static Double getTotalCost(SparseArray<TextBlock> blocks) {
+    private static Double getTotalCost(List<Text> textLines) {
         String costTemplate = "^\\$?(\\d+\\.\\d{2})$";
         double largestCost = 0.0;
         Pattern costPattern = Pattern.compile(costTemplate);
-        for (int bi=0; bi < blocks.size(); bi++) {
-            List<?extends Text> lines = blocks.valueAt(bi).getComponents();
-            for (int li=0; li < lines.size(); li++) {
-                List<?extends Text> elements = lines.get(li).getComponents();
-                for (int ei=0; ei < elements.size(); ei++) {
-                    Matcher matcher = costPattern.matcher(elements.get(ei).getValue());
-                    if (matcher.matches()) {
-                        System.out.println("############# THIS IS BEING SENT TO Double.parseDouble" + matcher.group(1));
-                        Double match = Double.parseDouble(matcher.group(1));
-                        if (match > largestCost) {
-                            largestCost = match;
-                        }
+        for (int li=0; li < textLines.size(); li++) {
+            List<?extends Text> elements = textLines.get(li).getComponents();
+            for (int ei=0; ei < elements.size(); ei++) {
+                Matcher matcher = costPattern.matcher(elements.get(ei).getValue());
+                if (matcher.matches()) {
+                    System.out.println("############# THIS IS BEING SENT TO Double.parseDouble" + matcher.group(1));
+                    Double match = Double.parseDouble(matcher.group(1));
+                    if (match > largestCost) {
+                        largestCost = match;
                     }
                 }
             }
-
         }
         if (largestCost == 0.0) {
             System.out.println("Total cost not found on receipt");
@@ -144,15 +169,14 @@ public class OcrStaticProcessor {
         return largestCost;
     }
 
-    private static JSONArray getPurchasedItems(SparseArray<TextBlock> blocks) {
+    private static JSONArray getPurchasedItems(List<Text> textLines) {
         JSONArray purchasedItems = new JSONArray();
-        String subTotalTemplate = "(?i)sub\\s*total";
-        Pattern subTotalPattern = Pattern.compile(subTotalTemplate);
+        String subTotalTemplate = ".+sub\\s*total.+";
+        Pattern subTotalPattern = Pattern.compile(subTotalTemplate, Pattern.CASE_INSENSITIVE);
         String pItemTemplate = "(.*)\\s+\\$?(\\d+\\.\\d{2})";
         Pattern pItemPattern = Pattern.compile(pItemTemplate);
-        for (int bi=0; bi < blocks.size(); bi++) {
-            // List<?extends Text> block = blocks.valueAt(bi).getComponents();
-            String strLine = blocks.get(bi).getValue();
+        for (int li=0; li < textLines.size(); li++) {
+            String strLine = textLines.get(li).getValue();
             Matcher matcherSubTotal = subTotalPattern.matcher(strLine);
             System.out.println("strLine: " + strLine);
             if (matcherSubTotal.matches() && purchasedItems.length() > 0) {
