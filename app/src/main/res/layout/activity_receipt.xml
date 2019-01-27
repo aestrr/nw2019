@@ -150,7 +150,6 @@
                 android:background="#FFFFFF"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
-                android:layout_column="2" />
 
             <Spinner
                 android:id="@+id/spinner1"
