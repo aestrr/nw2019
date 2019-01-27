@@ -65,10 +65,6 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
         } catch (Exception e) {
             return;
         }
-
-            OcrGraphic graphic = new OcrGraphic(mGraphicOverlay, item);
-            mGraphicOverlay.add(graphic);
-        }
     }
     public JSONObject parseDetectedItems(SparseArray<TextBlock> blocks) throws JSONException, ParseException {
         int nTextBlocks = blocks.size();
@@ -114,6 +110,7 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
                 }
             }
         }
+        return new Date();
     }
 
     public Double getTotalCost(SparseArray<TextBlock> blocks) throws ParseException {
@@ -133,6 +130,7 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
                 }
             }
         }
+        return 0.0;
     }
 
     public JSONArray getPurchasedItems(SparseArray<TextBlock> blocks) throws ParseException, JSONException {
