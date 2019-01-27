@@ -13,8 +13,6 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import Model.Budget;
-
 public class StatusActivity extends AppCompatActivity {
     private double monthlyBudget;
 

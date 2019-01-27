@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import Model.Budget;
 
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
