@@ -16,4 +16,6 @@
     <string name="ocr_success">Text read successfully</string>
     <string name="ocr_failure">No text captured</string>
     <string name="ocr_error">"Error reading text: %1$s"</string>
+
+    <string name="title_activity_receipts">Receipts</string>
 </resources>
