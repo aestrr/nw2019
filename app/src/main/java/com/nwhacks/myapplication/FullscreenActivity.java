@@ -33,6 +33,7 @@ import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
+import com.nwhacks.myapplication.Model.Receipt;
 
 import org.json.JSONObject;
 
@@ -359,8 +360,11 @@ public class FullscreenActivity extends AppCompatActivity {
                     System.out.println("textBlocks: " + textBlock.getValue());
                     //System.out.println("textBlocks: " + textBlocks.valueAt(i).getValue());
                 }
-                JSONObject receipts = OcrStaticProcessor.parseDetectedItems(textBlocks);
-                System.out.println(receipts);
+                //JSONObject receipts = OcrStaticProcessor.parseDetectedItems(textBlocks);
+
+                Intent i = new Intent(FullscreenActivity.this, ReceiptActivity.class);
+                i.putExtra("EXTRA_JSON",OcrStaticProcessor.receiptJson.toString());
+                startActivity(i);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);

@@ -9,6 +9,8 @@ import android.view.View;
 
 public class ReceiptActivity extends AppCompatActivity {
 
+    String jsonString;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +26,11 @@ public class ReceiptActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            jsonString = extras.getString("EXTRA_JSON");
+            System.out.println(jsonString);
+        }
     }
 
 }
