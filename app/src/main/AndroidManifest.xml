@@ -14,9 +14,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".InitialBudgetActivity"
+            android:label="@string/title_activity_initial_budget"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".StatusActivity"
             android:label="@string/title_activity_status"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".FullscreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -28,10 +32,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name="com.nwhacks.myapplication.OcrCaptureActivity"
+        <activity
+            android:name=".OcrCaptureActivity"
             android:label="Read Text" />
-
     </application>
 
 </manifest>

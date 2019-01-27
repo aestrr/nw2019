@@ -124,4 +124,12 @@
         android:translationX="250dp"
         android:translationY="600dp" />
 
+    <Button
+        android:id="@+id/button"
+        android:layout_width="141dp"
+        android:layout_height="66dp"
+        android:text="Set Budget"
+        android:translationX="260dp"
+        android:translationY="70dp" />
+
 </android.support.design.widget.CoordinatorLayout>
