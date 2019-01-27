@@ -65,23 +65,41 @@ public class OcrStaticProcessor {
     }
 
     private static Date getTransactionDate(SparseArray<TextBlock> blocks) {
-        String dateTemplate = "^\\d{2}\\/\\d{2}\\/\\d{2,4}$";
-        Pattern datePattern = Pattern.compile(dateTemplate);
+        String dateTemplate4 = "^\\d{2}\\/\\d{2}\\/\\d{4}$";
+        String dateTemplate2 = "^\\d{2}\\/\\d{2}\\/\\d{2}$";
+        Pattern datePattern4 = Pattern.compile(dateTemplate4);
+        Pattern datePattern2 = Pattern.compile(dateTemplate2);
         SimpleDateFormat format0 = new SimpleDateFormat("MM/dd/yyyy");
         SimpleDateFormat format1 = new SimpleDateFormat("MM/dd/yy");
         SimpleDateFormat format2 = new SimpleDateFormat("dd/MM/yyyy");
         SimpleDateFormat format3 = new SimpleDateFormat("dd/MM/yy");
-        SimpleDateFormat formats[] = {format0, format1, format2, format3};
+        SimpleDateFormat formats4[] = {format0, format2};
+        SimpleDateFormat formats2[] = {format1, format3};
         for (int bi=0; bi < blocks.size(); bi++) {
             List<?extends Text> lines = blocks.valueAt(bi).getComponents();
             for (int li=0; li < lines.size(); li++) {
                 List<?extends Text> elements = lines.get(li).getComponents();
                 for (int ei=0; ei < elements.size(); ei++) {
-                    Matcher matcher = datePattern.matcher(elements.get(ei).getValue());
-                    if (matcher.matches()) {
-                        String word = matcher.group(0);
+                    Matcher matcher4 = datePattern4.matcher(elements.get(ei).getValue());
+                    Matcher matcher2 = datePattern2.matcher(elements.get(ei).getValue());
+                    if (matcher4.matches()) {
+                        String word = matcher4.group(0);
                         Date parsedDate;
-                        for (SimpleDateFormat f : formats) {
+                        for (SimpleDateFormat f : formats4) {
+                            try {
+                                parsedDate = f.parse(word);
+                                if (parsedDate != null) {
+                                    return parsedDate;
+                                }
+                            } catch (ParseException e) {
+                                System.out.println(String.format("Can't parse date %s", word));
+                            }
+                        }
+                    }
+                    if (matcher2.matches()) {
+                        String word = matcher2.group(0);
+                        Date parsedDate;
+                        for (SimpleDateFormat f : formats2) {
                             try {
                                 parsedDate = f.parse(word);
                                 if (parsedDate != null) {
@@ -128,7 +146,7 @@ public class OcrStaticProcessor {
 
     private static JSONArray getPurchasedItems(SparseArray<TextBlock> blocks) {
         JSONArray purchasedItems = new JSONArray();
-        String subTotalTemplate = "^.*\\s*Sub\\s*Total\\s*.*$";
+        String subTotalTemplate = "(?i)^.*\\s*sub\\s*total\\s*.*$";
         Pattern subTotalPattern = Pattern.compile(subTotalTemplate);
         String pItemTemplate = "^(.*)\\s+\\$?(\\d+\\.\\d{2})[^\\d]*$";
         Pattern pItemPattern = Pattern.compile(pItemTemplate);
