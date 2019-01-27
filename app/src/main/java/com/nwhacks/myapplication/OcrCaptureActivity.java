@@ -25,6 +25,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,20 +35,25 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.vision.Frame;
 import com.nwhacks.myapplication.ui.camera.CameraSource;
 import com.nwhacks.myapplication.ui.camera.CameraSourcePreview;
 import com.nwhacks.myapplication.ui.camera.GraphicOverlay;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -76,6 +83,18 @@ public final class OcrCaptureActivity extends AppCompatActivity {
     // Helper objects for detecting taps and pinches.
     private ScaleGestureDetector scaleGestureDetector;
     private GestureDetector gestureDetector;
+
+    private CameraSource.PictureCallback mPicture = new CameraSource.PictureCallback() {
+        @Override
+        public void onPictureTaken(byte[] data) {
+            TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
+            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+            Frame imageFrame = new Frame.Builder().setBitmap(bitmap).build();
+            SparseArray<TextBlock> textBlocks = textRecognizer.detect(imageFrame);
+            JSONObject receipts = OcrStaticProcessor.parseDetectedItems(textBlocks);
+            System.out.println(receipts);
+        }
+    };
 
     /**
      * Initializes the UI and creates the detector pipeline.
@@ -107,6 +126,17 @@ public final class OcrCaptureActivity extends AppCompatActivity {
         Snackbar.make(mGraphicOverlay, "Tap to capture. Pinch/Stretch to zoom",
                 Snackbar.LENGTH_LONG)
                 .show();
+
+        Button captureButton = (Button) findViewById(R.id.button_capture);
+        captureButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // get an image from the camera
+                        mCameraSource.takePicture(null, mPicture);
+                    }
+                }
+        );
     }
 
     /**
@@ -400,6 +430,10 @@ public final class OcrCaptureActivity extends AppCompatActivity {
         @Override
         public void onScaleEnd(ScaleGestureDetector detector) {
             mCameraSource.doZoom(detector.getScaleFactor());
+        }
+
+        public void takePicture(View view) {
+            mCameraSource.takePicture(null, mPicture);
         }
     }
 }
