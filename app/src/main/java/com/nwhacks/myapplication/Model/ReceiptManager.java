@@ -19,4 +19,8 @@ public class ReceiptManager {
     private ReceiptManager() {
         receipts = new ArrayList<>();
     }
+
+    public List<Receipt> getReceipts() {
+        return receipts;
+    }
 }
