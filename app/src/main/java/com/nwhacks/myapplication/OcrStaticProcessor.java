@@ -126,7 +126,7 @@ public class OcrStaticProcessor {
             for (int li=0; li < lines.size(); li++) {
                 List<?extends Text> elements = lines.get(li).getComponents();
                 for (int ei=0; ei < elements.size(); ei++) {
-                    Matcher matcher = costPattern.matcher(blocks.valueAt(ei).getValue());
+                    Matcher matcher = costPattern.matcher(elements.get(ei).getValue());
                     if (matcher.matches()) {
                         System.out.println("############# THIS IS BEING SENT TO Double.parseDouble" + matcher.group(1));
                         Double match = Double.parseDouble(matcher.group(1));
