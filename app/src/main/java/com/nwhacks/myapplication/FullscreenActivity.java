@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.StrictMode;
@@ -23,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.vision.Frame;
+import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 
@@ -35,6 +37,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import static android.content.ContentValues.TAG;
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
@@ -252,7 +255,13 @@ public class FullscreenActivity extends AppCompatActivity {
                 System.out.println("imageFile absolute path : " + imageFile.getAbsolutePath());
                 //File file = new File(mCurrentPhotoPath);
                 Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
-               // mImageView.setImageBitmap(bitmap);
+                Matrix matrix = new Matrix();
+
+                matrix.postRotate(90);
+
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(), bitmap.getHeight(), true);
+
+                Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
                 TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
 
                 if (!textRecognizer.isOperational()) {
@@ -278,11 +287,13 @@ public class FullscreenActivity extends AppCompatActivity {
                     }
                 }
 
-                Frame imageFrame = new Frame.Builder().setBitmap(bitmap).build();
+                Frame imageFrame = new Frame.Builder().setBitmap(rotatedBitmap).build();
+                System.out.println("isOperational: " + textRecognizer.isOperational());
                 SparseArray<TextBlock> textBlocks = textRecognizer.detect(imageFrame);
-                System.out.println("all textblocks: " + textBlocks.toString());
                 for (int i = 0; i < textBlocks.size(); i++) {
-                    System.out.println("textBlocks: " + textBlocks.valueAt(i).getValue());
+                    TextBlock textBlock = textBlocks.get(textBlocks.keyAt(i));
+                    System.out.println("textBlocks: " + textBlock.getValue());
+                    //System.out.println("textBlocks: " + textBlocks.valueAt(i).getValue());
                 }
                 JSONObject receipts = OcrStaticProcessor.parseDetectedItems(textBlocks);
                 System.out.println(receipts);
