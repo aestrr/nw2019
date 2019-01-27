@@ -148,13 +148,15 @@ public class OcrStaticProcessor {
         JSONArray purchasedItems = new JSONArray();
         String subTotalTemplate = "(?i)sub\\s*total";
         Pattern subTotalPattern = Pattern.compile(subTotalTemplate);
-        String pItemTemplate = "^(.*)\\s+\\$?(\\d+\\.\\d{2})[^\\d]*$";
+        String pItemTemplate = "(.*)\\s+\\$?(\\d+\\.\\d{2})";
         Pattern pItemPattern = Pattern.compile(pItemTemplate);
         for (int bi=0; bi < blocks.size(); bi++) {
             List<?extends Text> block = blocks.valueAt(bi).getComponents();
             for (int li=0; li < block.size(); li++) {
                 String strLine = block.get(li).getValue();
                 Matcher matcherSubTotal = subTotalPattern.matcher(strLine);
+                System.out.println("Line li " + li);
+                System.out.println("strLine: " + strLine);
                 if (matcherSubTotal.matches() && purchasedItems.length() > 0) {
                     System.out.println("Hit sub total line, stopped looking for purchasedItems");
                     return purchasedItems;
