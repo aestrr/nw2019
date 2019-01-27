@@ -1,7 +1,9 @@
 package com.nwhacks.myapplication;
 
+import android.graphics.Point;
 import android.util.SparseArray;
 
+import com.google.android.gms.vision.text.Line;
 import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.vision.text.TextBlock;
 
@@ -143,7 +145,7 @@ public class OcrStaticProcessor {
             }
         }
         System.out.println("No date found on receipt, returning current date");
-        return new Date();
+        return new Date(0);
     }
 
     private static Double getTotalCost(List<Text> textLines) {
@@ -171,20 +173,26 @@ public class OcrStaticProcessor {
 
     private static JSONArray getPurchasedItems(List<Text> textLines) {
         JSONArray purchasedItems = new JSONArray();
-        String subTotalTemplate = ".+sub\\s*total.+";
+        String subTotalTemplate = "subtotal";
         Pattern subTotalPattern = Pattern.compile(subTotalTemplate, Pattern.CASE_INSENSITIVE);
         String pItemTemplate = "(.*)\\s+\\$?(\\d+\\.\\d{2})";
         Pattern pItemPattern = Pattern.compile(pItemTemplate);
         Matcher matcherSubTotal;
-        for (int li=0; li < textLines.size(); li++) {
-            String strLine = textLines.get(li).getValue();
-            List<?extends Text> elements = textLines.get(li).getComponents();
-            for (int ei=0; ei < elements.size(); ei++) {
-                String el = elements.get(ei).getValue();
+        List<String> combinedLines = InLine.combineInLines(textLines);
+        for (int li=0; li < combinedLines.size(); li++) {
+            String strLine = combinedLines.get(li);
+            String[] words = strLine.split("\\s+");
+            for (int ei=0; ei < words.length; ei++) {
+                String el = words[ei];
                 matcherSubTotal = subTotalPattern.matcher(el);
-                if (matcherSubTotal.matches() && purchasedItems.length() > 0) {
-                    System.out.println("Hit sub total line, stopped looking for purchasedItems");
-                    return purchasedItems;
+                if (matcherSubTotal.matches()) {
+                    System.out.println("Hit sub total line, checking if purchased items have been found yet");
+                    if (purchasedItems.length() > 0) {
+                        System.out.println("Purchased items found, returning");
+                        return purchasedItems;
+                    } else {
+                        System.out.println("Hit sub total line, but no purchased items found, continuing");
+                    }
                 }
 
             }
@@ -207,5 +215,180 @@ public class OcrStaticProcessor {
             System.out.println("No purchased items found on receipt");
         }
         return purchasedItems;
+    }
+}
+
+class InLine {
+    public static double distance (double floats[]) {
+        double min = floats[0];
+        double max = floats[0];
+        for (int i=1; i < floats.length; i++) {
+            if (floats[i] < min) {
+                min = floats[i];
+            }
+            if (floats[i] > max) {
+                max = floats[i];
+            }
+        }
+        return max - min;
+    }
+
+    public static int isLeft(Point[] boxA, Point[] boxB) {
+        int axSum = 0;
+        int bxSum = 0;
+        for (int i=0; i < 4; i++) {
+            axSum += boxA[i].x;
+            bxSum += boxB[i].x;
+        }
+        if (axSum < bxSum) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
+    public static double sideBySideDistance(Point[] boxA, Point[] boxB) {
+        Point boxAtl = boxA[0];
+        Point boxAtr = boxA[1];
+        Point boxAbr = boxA[2];
+        Point boxAbl = boxA[3];
+        Point boxBtl = boxB[0];
+        Point boxBtr = boxB[1];
+        Point boxBbr = boxB[2];
+        Point boxBbl = boxB[3];
+
+
+        // slopes of connecting lines between first and second boxes
+        double comhm0 = Math.atan((double) (boxBtl.y - boxAtl.y) / (double) (boxBtl.x - boxAtl.x));
+        double comhm1 = Math.atan((double) (boxBtr.y - boxAtr.y) / (double) (boxBtr.x - boxAtr.x));
+        double comhm2 = Math.atan((double) (boxBbl.y - boxAbl.y) / (double) (boxBbl.x - boxAbl.x));
+        double comhm3 = Math.atan((double) (boxBbr.y - boxAbr.y) / (double) (boxBbr.x - boxAbr.x));
+        double slopes[] = {comhm0, comhm1, comhm2, comhm3};
+
+        return distance(slopes);
+    }
+
+    public static double inLineDistance(Point[] boxA, Point[] boxB) {
+        Point boxAtl = boxA[0];
+        Point boxAtr = boxA[1];
+        Point boxAbr = boxA[2];
+        Point boxAbl = boxA[3];
+        Point boxBtl = boxB[0];
+        Point boxBtr = boxB[1];
+        Point boxBbr = boxB[2];
+        Point boxBbl = boxB[3];
+
+        // slopes of first box's horizontal lines
+        double boxAhm0 = Math.atan((double) (boxAtr.y - boxAtl.y) / (double) (boxAtr.x - boxAtl.x));
+        double boxAhm1 = Math.atan((double) (boxAbr.y - boxAbl.y) / (double) (boxAbr.x - boxAbl.x));
+
+        // slopes of second box's horizontal lines
+        double boxBhm0 = Math.atan((double) (boxBtr.y - boxBtl.y) / (double) (boxBtr.x - boxBtl.x));
+        double boxBhm1 = Math.atan((double) (boxBbr.y - boxBbl.y) / (double) (boxBbr.x - boxBbl.x));
+
+        // slopes of connecting lines between first and second boxes
+        double comhm0 = Math.atan((double) (boxBtl.y - boxAtr.y) / (double) (boxBtl.x - boxAtr.x));
+        double comhm1 = Math.atan((double) (boxBbl.y - boxAbr.y) / (double) (boxAbl.x - boxAbr.x));
+
+        double slopes[] = {boxAhm0, boxAhm1, boxBhm0, boxBhm1, comhm0, comhm1};
+
+        return distance(slopes);
+    }
+
+
+    public static List<String> combineInLines(List<Text> textLines) {
+        List<String> outList = new ArrayList<>();
+        List<Integer> covered = new ArrayList<>();
+        for (int i=0; i<textLines.size()-1; i++) {
+            boolean skip = false;
+            for (int c : covered) {
+                if (i == c) {
+                    skip = true;
+                    break;
+                }
+            }
+            if (skip) {
+                continue;
+            }
+            Point box0[] = textLines.get(i).getCornerPoints();
+            int closest = closestSideKick(textLines, i);
+            if (closest != -1) {
+                skip = false;
+                for (int c : covered) {
+                    if (closest == c) {
+                        skip = true;
+                        break;
+                    }
+                }
+                if (skip) {
+                    continue;
+                }
+                String line0 = textLines.get(i).getValue();
+                String line1 = textLines.get(closest).getValue();
+                String[] lines = {line0, line1};
+                outList.add(textLines.get(closest).getValue());
+                covered.add(closest);
+                covered.add(i);
+                Point box1[] = textLines.get(closest).getCornerPoints();
+                int leftBox = isLeft(box0, box1);
+                int rightBox;
+                if (leftBox != 0) {
+                    rightBox = 0;
+                } else {
+                    rightBox = 1;
+                }
+                String combined = lines[leftBox] + " " + lines[rightBox];
+                outList.add(combined);
+            } else {
+                outList.add(textLines.get(i).getValue());
+                covered.add(i);
+            }
+        }
+        return outList;
+    }
+
+    public static int closestSideKick(List<Text> textLines, int idx) {
+        double sthreshold = 0.04;
+        double ithreshold = 0.04;
+        double sbsd;
+        double sbsdc;
+        double ild;
+        double ildc;
+        Point box0[] = textLines.get(idx).getCornerPoints();
+        Point box1[];
+        int sclosest;
+        int iclosest;
+        if (idx == 0) {
+            sclosest = 1;
+            iclosest = 1;
+        } else {
+            sclosest = 0;
+            iclosest = 0;
+        }
+        sbsdc = sideBySideDistance(box0, textLines.get(sclosest).getCornerPoints());
+        ildc = inLineDistance(box0, textLines.get(iclosest).getCornerPoints());
+        for (int i=0; i < textLines.size(); i++) {
+            if (i == idx) {
+                continue;
+            }
+            box1 = textLines.get(i).getCornerPoints();
+            sbsd = sideBySideDistance(box0, box1);
+            ild = inLineDistance(box0, box1);
+
+            if (sbsd < sbsdc) {
+                sclosest = i;
+                sbsdc = sbsd;
+            }
+            if (ild < ildc) {
+                iclosest = i;
+                ildc = ild;
+            }
+        }
+
+        if (sclosest == iclosest && sbsdc < sthreshold && ildc < ithreshold) {
+            return sclosest;
+        } else {
+            return -1;
+        }
     }
 }
