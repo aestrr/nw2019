@@ -1,6 +1,9 @@
 package com.nwhacks.myapplication;
 
 import android.annotation.SuppressLint;
+
+import android.graphics.drawable.AnimationDrawable;
+
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
@@ -13,12 +16,16 @@ import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
+
+import android.widget.ImageView;
+
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -41,6 +48,7 @@ import java.util.List;
 
 import static android.content.ContentValues.TAG;
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
+
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -66,6 +74,9 @@ public class FullscreenActivity extends AppCompatActivity {
     private static final int UI_ANIMATION_DELAY = 300;
     private final Handler mHideHandler = new Handler();
     private View mContentView;
+
+
+    public AnimationDrawable bun;
 
     private static final int RC_OCR_CAPTURE = 9003;
 
@@ -147,6 +158,10 @@ public class FullscreenActivity extends AppCompatActivity {
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+
+
+
+
     }
 
     @Override
@@ -201,6 +216,61 @@ public class FullscreenActivity extends AppCompatActivity {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
+
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
+        ImageView img = (ImageView) findViewById(R.id.Happy);
+        img.setBackgroundResource(R.drawable.happy);
+        bun = (AnimationDrawable) img.getBackground();
+
+        final ImageView stand = findViewById(R.id.Bunny);
+        stand.setVisibility(mContentView.INVISIBLE);
+
+        bun.run();
+
+    }
+
+
+
+    @Override
+    public void onEnterAnimationComplete() {
+        super.onEnterAnimationComplete();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        findViewById(R.id.Bunny).setVisibility(mContentView.VISIBLE);
+    }
+
+
+
+
+
+
+
+//
+//    AnimationDrawable rocketAnimation;
+//
+//    public void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.main);
+//
+//        ImageView rocketImage = (ImageView) findViewById(R.id.Bunny);
+//        rocketImage.setBackgroundResource(R.drawable.bunny_happy);
+//        rocketAnimation = (AnimationDrawable) rocketImage.getBackground();
+//
+//        rocketImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                rocketAnimation.start();
+//            }
+//        });
+//    }
+
 
     public void openCamera(View view) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -326,4 +396,5 @@ public class FullscreenActivity extends AppCompatActivity {
         return null;
 
     }
+
 }
