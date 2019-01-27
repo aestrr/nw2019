@@ -21,7 +21,9 @@ public class Budget {
     public void checkIfOneMonthPassed() {
         Calendar targetDate = initialBudgetSetTime;
         targetDate.add(Calendar.DAY_OF_MONTH, 28);
-        if (Calendar.getInstance() == targetDate);
+        if (Calendar.getInstance() == targetDate) {
+            currentBudget = initialMonthlyBudget;
+        }
     }
 
     public double getInitialMonthlyBudget() {
