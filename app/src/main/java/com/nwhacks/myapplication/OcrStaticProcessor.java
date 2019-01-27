@@ -122,7 +122,7 @@ public class OcrStaticProcessor {
 
     private static JSONArray getPurchasedItems(SparseArray<TextBlock> blocks) {
         JSONArray purchasedItems = new JSONArray();
-        String subTotalTemplate = "\\s*Sub.+Total\\s*";
+        String subTotalTemplate = "\\s*Sub\\s+Total\\s*";
         String pItemTemplate = "(.*)\\s+\\$?(\\d+\\.\\d{2})[^\\d]*";
         Pattern pItemPattern = Pattern.compile(pItemTemplate);
         for (int bi=0; bi < blocks.size(); bi++) {
