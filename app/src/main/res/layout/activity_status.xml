@@ -15,7 +15,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorAccent"
+            android:background="#33b5e5"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
@@ -107,12 +107,12 @@
     <ProgressBar
         android:id="@+id/bar_progress"
         style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="326dp"
+        android:layout_width="233dp"
         android:layout_height="105dp"
         android:max="100"
         android:progress="100"
         android:scaleY="6"
-        android:translationX="40dp"
+        android:translationX="55dp"
         android:translationY="170dp" />
 
 </android.support.design.widget.CoordinatorLayout>
