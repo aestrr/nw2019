@@ -1,13 +1,14 @@
 package com.nwhacks.myapplication;
 
 import android.annotation.SuppressLint;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
-
+import android.widget.ImageView;
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
@@ -32,6 +33,8 @@ public class FullscreenActivity extends AppCompatActivity {
     private static final int UI_ANIMATION_DELAY = 300;
     private final Handler mHideHandler = new Handler();
     private View mContentView;
+
+    AnimationDrawable bun;
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
         @Override
@@ -106,6 +109,13 @@ public class FullscreenActivity extends AppCompatActivity {
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+
+
+        ImageView img = (ImageView) findViewById(R.id.Happy);
+        img.setBackgroundResource(R.drawable.happy);
+        bun = (AnimationDrawable) img.getBackground();
+
+
     }
 
     @Override
@@ -160,4 +170,39 @@ public class FullscreenActivity extends AppCompatActivity {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        ImageView stand = findViewById(R.id.Bunny);
+        stand.setVisibility(mContentView.INVISIBLE);
+
+        bun.start();
+    }
+
+    @Override
+    public void
+
+
+
+//
+//    AnimationDrawable rocketAnimation;
+//
+//    public void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.main);
+//
+//        ImageView rocketImage = (ImageView) findViewById(R.id.Bunny);
+//        rocketImage.setBackgroundResource(R.drawable.bunny_happy);
+//        rocketAnimation = (AnimationDrawable) rocketImage.getBackground();
+//
+//        rocketImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                rocketAnimation.start();
+//            }
+//        });
+//    }
+
+
 }
