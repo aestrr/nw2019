@@ -105,6 +105,7 @@ public class OcrStaticProcessor {
                 for (int ei=0; ei < elements.size(); ei++) {
                     Matcher matcher = costPattern.matcher(blocks.valueAt(bi).getValue());
                     if (matcher.matches()) {
+                        System.out.println("############# THIS IS BEING SENT TO Double.parseDouble" + matcher.group(0));
                         Double match = Double.parseDouble(matcher.group(0));
                         if (match > largestCost) {
                             largestCost = match;
