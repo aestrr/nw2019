@@ -2,14 +2,39 @@ package com.nwhacks.myapplication;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Environment;
+import android.os.StrictMode;
+import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
+import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 
+import com.google.android.gms.vision.Frame;
+import com.google.android.gms.vision.text.TextBlock;
+import com.google.android.gms.vision.text.TextRecognizer;
+
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static android.content.ContentValues.TAG;
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 /**
@@ -38,6 +63,11 @@ public class FullscreenActivity extends AppCompatActivity {
     private View mContentView;
 
     private static final int RC_OCR_CAPTURE = 9003;
+
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    private Bitmap mImageBitmap;
+    private String mCurrentPhotoPath;
+    private ImageView mImageView;
 
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -99,7 +129,6 @@ public class FullscreenActivity extends AppCompatActivity {
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
-
 
         // Set up the user interaction to manually show or hide the system UI.
         mContentView.setOnClickListener(new View.OnClickListener() {
@@ -169,7 +198,91 @@ public class FullscreenActivity extends AppCompatActivity {
     }
 
     public void openCamera(View view) {
-        Intent intent = new Intent(this, OcrCaptureActivity.class);
-        startActivity(intent);
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+                Log.i(TAG, "IOException");
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.android.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        System.out.println("DIR_PICS: " + Environment.DIRECTORY_PICTURES);
+        System.out.println("storageDir: " + storageDir);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        System.out.println("mCurrentPhotoPath: " + mCurrentPhotoPath);
+
+        return image;
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE) {
+            if (resultCode == RESULT_OK) {
+                File imageFile = new File(mCurrentPhotoPath);
+                // use imageFile to open your image
+                System.out.println("imageFile absolute path : " + imageFile.getAbsolutePath());
+                //File file = new File(mCurrentPhotoPath);
+                Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+               // mImageView.setImageBitmap(bitmap);
+                TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
+                Frame imageFrame = new Frame.Builder().setBitmap(bitmap).build();
+                SparseArray<TextBlock> textBlocks = textRecognizer.detect(imageFrame);
+                JSONObject receipts = OcrStaticProcessor.parseDetectedItems(textBlocks);
+                System.out.println(receipts);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public Bitmap decodeFile(String path) {
+        try {
+            // Decode image size
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(path, o);
+            // The new size we want to scale to
+            final int REQUIRED_SIZE = 70;
+
+            // Find the correct scale value. It should be the power of 2.
+            int scale = 1;
+            while (o.outWidth / scale / 2 >= REQUIRED_SIZE && o.outHeight / scale / 2 >= REQUIRED_SIZE)
+                scale *= 2;
+
+            // Decode with inSampleSize
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            return BitmapFactory.decodeFile(path, o2);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        return null;
+
     }
 }
