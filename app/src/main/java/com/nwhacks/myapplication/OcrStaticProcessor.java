@@ -175,14 +175,20 @@ public class OcrStaticProcessor {
         Pattern subTotalPattern = Pattern.compile(subTotalTemplate, Pattern.CASE_INSENSITIVE);
         String pItemTemplate = "(.*)\\s+\\$?(\\d+\\.\\d{2})";
         Pattern pItemPattern = Pattern.compile(pItemTemplate);
+        Matcher matcherSubTotal;
         for (int li=0; li < textLines.size(); li++) {
             String strLine = textLines.get(li).getValue();
-            Matcher matcherSubTotal = subTotalPattern.matcher(strLine);
-            System.out.println("strLine: " + strLine);
-            if (matcherSubTotal.matches() && purchasedItems.length() > 0) {
-                System.out.println("Hit sub total line, stopped looking for purchasedItems");
-                return purchasedItems;
+            List<?extends Text> elements = textLines.get(li).getComponents();
+            for (int ei=0; ei < elements.size(); ei++) {
+                String el = elements.get(ei).getValue();
+                matcherSubTotal = subTotalPattern.matcher(el);
+                if (matcherSubTotal.matches() && purchasedItems.length() > 0) {
+                    System.out.println("Hit sub total line, stopped looking for purchasedItems");
+                    return purchasedItems;
+                }
+
             }
+            System.out.println("strLine: " + strLine);
             Matcher matcherPurchasedItems = pItemPattern.matcher(strLine);
             if (matcherPurchasedItems.matches()) {
                 String purchasedItem = matcherPurchasedItems.group(1);
