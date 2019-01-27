@@ -50,7 +50,7 @@ public class ReceiptActivity extends AppCompatActivity {
     public void sendToBunny(View view) {
         Intent intent = new Intent(ReceiptActivity.this, FullscreenActivity.class);
         if (receiptManager != null) {
-            intent.putExtra("EXTRA_RECEIPT", "true");
+            intent.putExtra("EXTRA_RECEIPT", receiptManager.getReceipt().getTotalCost());
         }
         startActivity(intent);
     }
