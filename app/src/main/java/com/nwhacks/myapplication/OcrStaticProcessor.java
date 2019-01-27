@@ -138,8 +138,8 @@ public class OcrStaticProcessor {
                 }
                 Matcher matcherPurchasedItems = pItemPattern.matcher(strLine);
                 if (matcherPurchasedItems.matches()) {
-                    String purchasedItem = matcherPurchasedItems.group(0);
-                    Double purchasedValue = Double.parseDouble(matcherPurchasedItems.group(1));
+                    String purchasedItem = matcherPurchasedItems.group(1);
+                    Double purchasedValue = Double.parseDouble(matcherPurchasedItems.group(2));
                     JSONObject purchasedPair = new JSONObject();
                     try {
                         purchasedPair.put("productName", purchasedItem);
