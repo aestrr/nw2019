@@ -86,6 +86,8 @@ public class FullscreenActivity extends AppCompatActivity {
     private String mCurrentPhotoPath;
     private ImageView mImageView;
 
+    private String danceBunny;
+
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
         @Override
@@ -155,6 +157,13 @@ public class FullscreenActivity extends AppCompatActivity {
             }
         });
 
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            danceBunny = extras.getString("EXTRA_RECEIPT");
+        }
+
+        onFeeding();
+
         Button button = findViewById(R.id.button_status);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -222,20 +231,18 @@ public class FullscreenActivity extends AppCompatActivity {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
+    public void onFeeding() {
+        if (danceBunny != null) {
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
+            ImageView img = (ImageView) findViewById(R.id.Happy);
+            img.setBackgroundResource(R.drawable.happy);
+            bun = (AnimationDrawable) img.getBackground();
 
-        ImageView img = (ImageView) findViewById(R.id.Happy);
-        img.setBackgroundResource(R.drawable.happy);
-        bun = (AnimationDrawable) img.getBackground();
+            final ImageView stand = findViewById(R.id.Bunny);
+            stand.setVisibility(mContentView.INVISIBLE);
 
-        final ImageView stand = findViewById(R.id.Bunny);
-        stand.setVisibility(mContentView.INVISIBLE);
-
-        bun.run();
-
+            bun.run();
+        }
     }
 
 
@@ -369,8 +376,10 @@ public class FullscreenActivity extends AppCompatActivity {
                     System.out.println("textBlocks: " + textBlock.getValue());
                     //System.out.println("textBlocks: " + textBlocks.valueAt(i).getValue());
                 }
-                JSONObject receipts = OcrStaticProcessor.parseDetectedItems(textBlocks);
-                System.out.println(receipts);
+                //JSONObject receipts = OcrStaticProcessor.parseDetectedItems(textBlocks);
+                Intent i = new Intent(FullscreenActivity.this, ReceiptActivity.class);
+                i.putExtra("EXTRA_JSON", OcrStaticProcessor.receiptJson.toString());
+                startActivity(i);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
