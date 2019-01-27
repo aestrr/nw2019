@@ -151,28 +151,27 @@ public class OcrStaticProcessor {
         String pItemTemplate = "(.*)\\s+\\$?(\\d+\\.\\d{2})";
         Pattern pItemPattern = Pattern.compile(pItemTemplate);
         for (int bi=0; bi < blocks.size(); bi++) {
-            // List<?extends Text> block = blocks.valueAt(bi).getComponents();
-            String strLine = blocks.valueAt(bi).toString();
-            String test = blocks.valueAt(bi).getValue();
-            System.out.println("strLine" + strLine);
-            System.out.println("test" + test);
-            Matcher matcherSubTotal = subTotalPattern.matcher(strLine);
-            System.out.println("strLine: " + strLine);
-            if (matcherSubTotal.matches() && purchasedItems.length() > 0) {
-                System.out.println("Hit sub total line, stopped looking for purchasedItems");
-                return purchasedItems;
-            }
-            Matcher matcherPurchasedItems = pItemPattern.matcher(strLine);
-            if (matcherPurchasedItems.matches()) {
-                String purchasedItem = matcherPurchasedItems.group(1);
-                Double purchasedValue = Double.parseDouble(matcherPurchasedItems.group(2));
-                JSONObject purchasedPair = new JSONObject();
-                try {
-                    purchasedPair.put("productName", purchasedItem);
-                    purchasedPair.put("productCost", purchasedValue);
-                    purchasedItems.put(purchasedPair);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+            List<?extends Text> lines = blocks.valueAt(bi).getComponents();
+            for (int li=0; li < lines.size(); li++) {
+                String strLine = lines.get(li).getValue();
+                System.out.println("strLine: " + strLine);
+                Matcher matcherSubTotal = subTotalPattern.matcher(strLine);
+                if (matcherSubTotal.matches() && purchasedItems.length() > 0) {
+                    System.out.println("Hit sub total line, stopped looking for purchasedItems");
+                    return purchasedItems;
+                }
+                Matcher matcherPurchasedItems = pItemPattern.matcher(strLine);
+                if (matcherPurchasedItems.matches()) {
+                    String purchasedItem = matcherPurchasedItems.group(1);
+                    Double purchasedValue = Double.parseDouble(matcherPurchasedItems.group(2));
+                    JSONObject purchasedPair = new JSONObject();
+                    try {
+                        purchasedPair.put("productName", purchasedItem);
+                        purchasedPair.put("productCost", purchasedValue);
+                        purchasedItems.put(purchasedPair);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
