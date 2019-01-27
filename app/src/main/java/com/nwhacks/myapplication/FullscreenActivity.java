@@ -23,6 +23,7 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import android.widget.EditText;
@@ -33,6 +34,7 @@ import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
+import com.nwhacks.myapplication.Model.Receipt;
 
 import org.json.JSONObject;
 
@@ -150,6 +152,14 @@ public class FullscreenActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 toggle();
+            }
+        });
+
+        Button button = findViewById(R.id.button_status);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(FullscreenActivity.this, InitialBudgetActivity.class));
             }
         });
 
@@ -282,6 +292,11 @@ public class FullscreenActivity extends AppCompatActivity {
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
         }
+    }
+
+    public void openReceipt(View view) {
+        Intent intent = new Intent(FullscreenActivity.this, ReceiptActivity.class);
+        startActivity(intent);
     }
 
     private File createImageFile() throws IOException {
