@@ -8,7 +8,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import Model.Budget;
+
 public class StatusActivity extends AppCompatActivity {
+    private double monthlyBudget;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +29,10 @@ public class StatusActivity extends AppCompatActivity {
             }
         });
 
+        Budget budget = new Budget(monthlyBudget);
         ProgressBar progressBar = findViewById(R.id.bar_progress);
-        progressBar.setProgress(10);
+        Double dProgress = (budget.getCurrentBudget() / monthlyBudget * 100.0);
+        int iProgress = dProgress.intValue();
+        progressBar.setProgress(iProgress);
     }
-
 }

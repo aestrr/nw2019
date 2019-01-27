@@ -28,7 +28,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="@color/colorAccent"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
@@ -50,7 +50,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Status"
-        android:textSize="36sp" />
+        android:textSize="36sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/text_progress"
@@ -58,8 +59,9 @@
         android:layout_height="300dp"
         android:text="Progress:"
         android:textSize="25sp"
-        app:layout_anchor="@+id/include"
-        android:translationY="50dp"/>
+        android:textStyle="bold"
+        android:translationY="50dp"
+        app:layout_anchor="@+id/include" />
 
     <ProgressBar
         android:id="@+id/bar_progress"
@@ -67,5 +69,32 @@
         android:layout_width="272dp"
         android:layout_height="241dp"
         android:translationY="100dp" />
+
+    <TextView
+        android:id="@+id/text_initial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Initial Budget:"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:translationY="400dp" />
+
+    <TextView
+        android:id="@+id/text_used"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Budget used:"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:translationY="500dp" />
+
+    <TextView
+        android:id="@+id/text_remaining"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Budget Remaining:"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:translationY="600dp" />
 
 </android.support.design.widget.CoordinatorLayout>
