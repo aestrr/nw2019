@@ -1,10 +1,5 @@
 package com.nwhacks.myapplication.Model;
 
-import android.media.Image;
-
-import org.json.JSONException;
-
-import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
