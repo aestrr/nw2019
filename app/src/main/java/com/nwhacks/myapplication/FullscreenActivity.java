@@ -284,6 +284,11 @@ public class FullscreenActivity extends AppCompatActivity {
         }
     }
 
+    public void openReceipt(View view) {
+        Intent intent = new Intent(FullscreenActivity.this, ReceiptActivity.class);
+        startActivity(intent);
+    }
+
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
