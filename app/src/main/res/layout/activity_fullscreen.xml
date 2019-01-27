@@ -39,7 +39,7 @@
             tools:ignore="UselessParent">
 
             <Button
-                android:id="@+id/button_camera"
+                android:id="@+id/button_status"
                 style="?metaButtonBarButtonStyle"
                 android:layout_width="110dp"
                 android:layout_height="74dp"
@@ -47,7 +47,7 @@
                 android:translationX="10dp"/>
 
             <Button
-                android:id="@+id/button_status"
+                android:id="@+id/button_camera"
                 style="?metaButtonBarButtonStyle"
                 android:layout_width="110dp"
                 android:layout_height="74dp"
