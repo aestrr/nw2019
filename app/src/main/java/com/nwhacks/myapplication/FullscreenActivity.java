@@ -265,39 +265,6 @@ public class FullscreenActivity extends AppCompatActivity {
         }
     }
 
-
-
-    @Override
-    public void onEnterAnimationComplete() {
-        super.onEnterAnimationComplete();
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        findViewById(R.id.Bunny).setVisibility(mContentView.VISIBLE);
-    }
-
-//
-//    AnimationDrawable rocketAnimation;
-//
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.main);
-//
-//        ImageView rocketImage = (ImageView) findViewById(R.id.Bunny);
-//        rocketImage.setBackgroundResource(R.drawable.bunny_happy);
-//        rocketAnimation = (AnimationDrawable) rocketImage.getBackground();
-//
-//        rocketImage.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                rocketAnimation.start();
-//            }
-//        });
-//    }
-
-
     public void openCamera(View view) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
