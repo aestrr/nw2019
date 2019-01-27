@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import Model.Budget;
 
@@ -34,5 +35,20 @@ public class StatusActivity extends AppCompatActivity {
         Double dProgress = (budget.getCurrentBudget() / monthlyBudget * 100.0);
         int iProgress = dProgress.intValue();
         progressBar.setProgress(iProgress);
+
+        TextView textView1 = findViewById(R.id.text_1);
+        Double dInitialBudget = budget.getInitialMonthlyBudget();
+        String sInitialBudget = dInitialBudget.toString();
+        textView1.setText(sInitialBudget);
+
+        TextView textView2 = findViewById(R.id.text_2);
+        Double dBudgetUsed = budget.getBudgetUsed();
+        String sBudgetUsed = dBudgetUsed.toString();
+        textView2.setText(sBudgetUsed);
+
+        TextView textView3 = findViewById(R.id.text_3);
+        Double dBudgetRemaining = budget.getCurrentBudget();
+        String sBudgetRemaining = dBudgetRemaining.toString();
+        textView3.setText(sBudgetRemaining);
     }
 }

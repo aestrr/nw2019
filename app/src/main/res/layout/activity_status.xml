@@ -97,4 +97,31 @@
         android:textStyle="bold"
         android:translationY="600dp" />
 
+    <TextView
+        android:id="@+id/text_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1234"
+        android:textSize="25sp"
+        android:translationX="250dp"
+        android:translationY="400dp" />
+
+    <TextView
+        android:id="@+id/text_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1234"
+        android:textSize="25sp"
+        android:translationX="250dp"
+        android:translationY="500dp" />
+
+    <TextView
+        android:id="@+id/text_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1234"
+        android:textSize="25sp"
+        android:translationX="250dp"
+        android:translationY="600dp" />
+
 </android.support.design.widget.CoordinatorLayout>
