@@ -1,4 +1,4 @@
-package Model;
+package com.nwhacks.myapplication.Model;
 
 import java.util.Calendar;
 import java.util.Date;

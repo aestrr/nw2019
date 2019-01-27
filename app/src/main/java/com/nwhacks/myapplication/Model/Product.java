@@ -1,4 +1,4 @@
-package Model;
+package com.nwhacks.myapplication.Model;
 
 public class Product {
     private String name;
