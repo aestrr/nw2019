@@ -95,17 +95,24 @@ public class OcrStaticProcessor {
     }
 
     private static Double getTotalCost(SparseArray<TextBlock> blocks) {
-        String costTemplate = "\\$(\\d+\\.\\d{2}[^\\d])";
+        String costTemplate = "^\\$?(\\d+\\.\\d{2})$";
         double largestCost = 0.0;
         Pattern costPattern = Pattern.compile(costTemplate);
         for (int bi=0; bi < blocks.size(); bi++) {
-            Matcher matcher = costPattern.matcher(blocks.valueAt(bi).getValue());
-            for (int m = 0; m < matcher.groupCount(); m++) {
-                Double match = Double.parseDouble(matcher.group(m));
-                if (match > largestCost) {
-                    largestCost = match;
+            List<?extends Text> lines = blocks.valueAt(bi).getComponents();
+            for (int li=0; li < lines.size(); li++) {
+                List<?extends Text> elements = lines.get(li).getComponents();
+                for (int ei=0; ei < elements.size(); ei++) {
+                    Matcher matcher = costPattern.matcher(blocks.valueAt(bi).getValue());
+                    if (matcher.matches()) {
+                        Double match = Double.parseDouble(matcher.group(0));
+                        if (match > largestCost) {
+                            largestCost = match;
+                        }
+                    }
                 }
             }
+
         }
         if (largestCost == 0.0) {
             System.out.println("Total cost not found on receipt");
@@ -116,7 +123,7 @@ public class OcrStaticProcessor {
     private static JSONArray getPurchasedItems(SparseArray<TextBlock> blocks) {
         JSONArray purchasedItems = new JSONArray();
         String subTotalTemplate = "?(S|s)ub.+?(t|T)otal";
-        String pItemTemplate = "(.+)\\s+\\$?(\\d+\\.\\d{2})[^\\d]";
+        String pItemTemplate = "(.*)\\s+\\$?(\\d+\\.\\d{2})[^\\d]*";
         Pattern pItemPattern = Pattern.compile(pItemTemplate);
         for (int bi=0; bi < blocks.size(); bi++) {
             List<?extends Text> block = blocks.valueAt(bi).getComponents();
