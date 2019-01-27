@@ -64,63 +64,75 @@ public class OcrStaticProcessor {
         return receipt;
     }
 
-    public static Date getTransactionDate(SparseArray<TextBlock> blocks) {
+    private static Date getTransactionDate(SparseArray<TextBlock> blocks) {
         String dateTemplate = "\\d{2}\\/\\d{2}\\/\\d{2,4}";
+        Pattern datePattern = Pattern.compile(dateTemplate);
         for (int bi=0; bi < blocks.size(); bi++) {
-            List<?extends Text> block = blocks.valueAt(bi).getComponents();
-            for (int li=0; li < block.size(); li++) {
-                List<?extends Text> line = block.get(li).getComponents();
-                for (int ei=0; ei < line.size(); ei++) {
-                    Text element = line.get(ei);
-                    String word = element.getValue();
-                    if (Pattern.matches(word, dateTemplate)) {
-                        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyyy");
-                        Date parsedDate;
-                        try {
-                            parsedDate = format.parse(word);
-                        } catch (ParseException e) {
-                            parsedDate = new Date();
-                        }
+            Matcher matcher = datePattern.matcher(blocks.valueAt(bi).getValue());
+            for (int m = 0; m < matcher.groupCount(); m++) {
+                String word = matcher.group(m);
+                SimpleDateFormat format0 = new SimpleDateFormat("MM/dd/yyyyy");
+                SimpleDateFormat format1 = new SimpleDateFormat("MM/dd/yy");
+                SimpleDateFormat format2 = new SimpleDateFormat("dd/MM/yyyy");
+                SimpleDateFormat format3 = new SimpleDateFormat("dd/MM/yy");
+                SimpleDateFormat formats[] = {format0, format1, format2, format3};
+                Date parsedDate;
+                for (SimpleDateFormat f : formats) {
+                    try {
+                        parsedDate = format0.parse(word);
                         if (parsedDate != null) {
                             return parsedDate;
                         }
+                    } catch (ParseException e) {
+                        System.out.println(String.format("Can't parse date %s", word));
                     }
                 }
+
             }
         }
-        System.out.println("Date not found on receipt");
+        System.out.println("No date found on receipt, returning current date");
         return new Date();
     }
 
-    public static Double getTotalCost(SparseArray<TextBlock> blocks) {
-        String costTemplate = "\\$\\d+\\.\\d{2}";
+    private static Double getTotalCost(SparseArray<TextBlock> blocks) {
+        String costTemplate = "^\\$?(\\d+\\.\\d{2})$";
+        double largestCost = 0.0;
         Pattern costPattern = Pattern.compile(costTemplate);
         for (int bi=0; bi < blocks.size(); bi++) {
-            List<?extends Text> block = blocks.valueAt(bi).getComponents();
-            for (int li=0; li < block.size(); li++) {
-                List<?extends Text> line = block.get(li).getComponents();
-                for (int ei=0; ei < line.size(); ei++) {
-                    Text element = line.get(ei);
-                    String word = element.getValue();
-                    if (Pattern.matches(word, costTemplate)) {
-                        Matcher matcher = costPattern.matcher(word);
-                        return Double.parseDouble(matcher.group(0));
+            List<?extends Text> lines = blocks.valueAt(bi).getComponents();
+            for (int li=0; li < lines.size(); li++) {
+                List<?extends Text> elements = lines.get(li).getComponents();
+                for (int ei=0; ei < elements.size(); ei++) {
+                    Matcher matcher = costPattern.matcher(blocks.valueAt(bi).getValue());
+                    if (matcher.matches()) {
+                        Double match = Double.parseDouble(matcher.group(0));
+                        if (match > largestCost) {
+                            largestCost = match;
+                        }
                     }
                 }
             }
+
         }
-        System.out.println("Total cost not found on receipt");
-        return 0.0;
+        if (largestCost == 0.0) {
+            System.out.println("Total cost not found on receipt");
+        }
+        return largestCost;
     }
 
-    public static JSONArray getPurchasedItems(SparseArray<TextBlock> blocks) {
+    private static JSONArray getPurchasedItems(SparseArray<TextBlock> blocks) {
         JSONArray purchasedItems = new JSONArray();
-        String pItemTemplate = "(.+)\\s+(\\d+\\.\\d{2})";
+        String subTotalTemplate = "?(S|s)ub.+?(t|T)otal";
+        String pItemTemplate = "(.*)\\s+\\$?(\\d+\\.\\d{2})[^\\d]*";
         Pattern pItemPattern = Pattern.compile(pItemTemplate);
         for (int bi=0; bi < blocks.size(); bi++) {
             List<?extends Text> block = blocks.valueAt(bi).getComponents();
             for (int li=0; li < block.size(); li++) {
                 String strLine = block.get(li).getValue();
+                if (Pattern.matches(strLine, subTotalTemplate) && purchasedItems.length() > 0) {
+                    System.out.println("Hit sub total line, stopped looking for purchasedItems");
+                    return purchasedItems;
+                }
                 if (Pattern.matches(strLine, pItemTemplate)) {
                     Matcher matcher = pItemPattern.matcher(strLine);
                     String purchasedItem = matcher.group(0);
