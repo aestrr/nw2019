@@ -154,7 +154,6 @@ public class OcrStaticProcessor {
             List<?extends Text> block = blocks.valueAt(bi).getComponents();
             String strLine = blocks.get(blocks.keyAt(bi)).getValue());
             Matcher matcherSubTotal = subTotalPattern.matcher(strLine);
-            System.out.println("Line li " + li);
             System.out.println("strLine: " + strLine);
             if (matcherSubTotal.matches() && purchasedItems.length() > 0) {
                 System.out.println("Hit sub total line, stopped looking for purchasedItems");
