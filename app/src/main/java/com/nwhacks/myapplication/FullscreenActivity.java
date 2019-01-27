@@ -2,12 +2,16 @@ package com.nwhacks.myapplication;
 
 import android.annotation.SuppressLint;
 import android.support.v4.view.ViewPager;
+import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
+
+import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -163,5 +167,10 @@ public class FullscreenActivity extends AppCompatActivity {
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    }
+
+    public void openCamera(View view) {
+        Intent intent = new Intent(this, OcrCaptureActivity.class);
+        startActivity(intent);
     }
 }
