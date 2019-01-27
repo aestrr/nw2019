@@ -95,7 +95,7 @@ public class OcrStaticProcessor {
     }
 
     private static Double getTotalCost(SparseArray<TextBlock> blocks) {
-        String costTemplate = "\\$(\\d+\\.\\d{2})";
+        String costTemplate = "\\$(\\d+\\.\\d{2}[^\\d])";
         double largestCost = 0.0;
         Pattern costPattern = Pattern.compile(costTemplate);
         for (int bi=0; bi < blocks.size(); bi++) {
@@ -116,7 +116,7 @@ public class OcrStaticProcessor {
     private static JSONArray getPurchasedItems(SparseArray<TextBlock> blocks) {
         JSONArray purchasedItems = new JSONArray();
         String subTotalTemplate = "?(S|s)ub.+?(t|T)otal";
-        String pItemTemplate = "(.+)\\s+(\\d+\\.\\d{2})";
+        String pItemTemplate = "(.+)\\s+\\$?(\\d+\\.\\d{2})[^\\d]";
         Pattern pItemPattern = Pattern.compile(pItemTemplate);
         for (int bi=0; bi < blocks.size(); bi++) {
             List<?extends Text> block = blocks.valueAt(bi).getComponents();
