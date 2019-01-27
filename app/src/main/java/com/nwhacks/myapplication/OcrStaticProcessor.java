@@ -126,7 +126,7 @@ public class OcrStaticProcessor {
             for (int li=0; li < lines.size(); li++) {
                 List<?extends Text> elements = lines.get(li).getComponents();
                 for (int ei=0; ei < elements.size(); ei++) {
-                    Matcher matcher = costPattern.matcher(blocks.valueAt(bi).getValue());
+                    Matcher matcher = costPattern.matcher(blocks.valueAt(ei).getValue());
                     if (matcher.matches()) {
                         System.out.println("############# THIS IS BEING SENT TO Double.parseDouble" + matcher.group(1));
                         Double match = Double.parseDouble(matcher.group(1));
@@ -146,7 +146,7 @@ public class OcrStaticProcessor {
 
     private static JSONArray getPurchasedItems(SparseArray<TextBlock> blocks) {
         JSONArray purchasedItems = new JSONArray();
-        String subTotalTemplate = "^(?i).*\\s*sub\\s*total\\s*.*$";
+        String subTotalTemplate = "(?i)sub\\s*total";
         Pattern subTotalPattern = Pattern.compile(subTotalTemplate);
         String pItemTemplate = "^(.*)\\s+\\$?(\\d+\\.\\d{2})[^\\d]*$";
         Pattern pItemPattern = Pattern.compile(pItemTemplate);
