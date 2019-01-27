@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="true">
+
+    <item
+        android:drawable="@drawable/bunny"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:layout_gravity="center"
+        android:duration="500"/>
+
+    <item android:drawable="@drawable/sad_bunny"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:layout_gravity="center"
+        android:duration="500"/>
+
+    <item
+        android:drawable="@drawable/bunny"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:layout_gravity="center"
+        android:duration="500"/>
+
+    <item android:drawable="@drawable/sad_bunny"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:layout_gravity="center"
+        android:duration="500"/>
+
+    <item
+        android:drawable="@drawable/bunny"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:layout_gravity="center"
+        android:duration="500"/>
+
+    <item android:drawable="@drawable/sad_bunny"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:layout_gravity="center"
+        android:duration="500"/>
+
+    <item
+        android:drawable="@drawable/bunny"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:layout_gravity="center"
+        android:duration="500"/>
+
+</animation-list>
