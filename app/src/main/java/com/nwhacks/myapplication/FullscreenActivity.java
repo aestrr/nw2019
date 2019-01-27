@@ -1,14 +1,26 @@
 package com.nwhacks.myapplication;
 
 import android.annotation.SuppressLint;
+
 import android.graphics.drawable.AnimationDrawable;
+
+import android.content.Intent;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
+
 import android.widget.ImageView;
+
+import android.widget.EditText;
+
+import static android.provider.AlarmClock.EXTRA_MESSAGE;
+
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -35,7 +47,12 @@ public class FullscreenActivity extends AppCompatActivity {
     private final Handler mHideHandler = new Handler();
     private View mContentView;
 
+
     public AnimationDrawable bun;
+
+    private static final int RC_OCR_CAPTURE = 9003;
+
+
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
         @Override
@@ -169,6 +186,7 @@ public class FullscreenActivity extends AppCompatActivity {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
+
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -220,5 +238,10 @@ public class FullscreenActivity extends AppCompatActivity {
 //        });
 //    }
 
+
+    public void openCamera(View view) {
+        Intent intent = new Intent(this, OcrCaptureActivity.class);
+        startActivity(intent);
+    }
 
 }
