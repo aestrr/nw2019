@@ -34,6 +34,7 @@ import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
+import com.nwhacks.myapplication.Model.Budget;
 import com.nwhacks.myapplication.Model.Receipt;
 
 import org.json.JSONObject;
@@ -86,7 +87,7 @@ public class FullscreenActivity extends AppCompatActivity {
     private String mCurrentPhotoPath;
     private ImageView mImageView;
 
-    private String danceBunny;
+    private Double receiptCost;
 
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -159,7 +160,8 @@ public class FullscreenActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            danceBunny = extras.getString("EXTRA_RECEIPT");
+             receiptCost = extras.getDouble("EXTRA_RECEIPT");
+             Budget.getInstance().spend(receiptCost);
         }
 
         onFeeding();
@@ -168,7 +170,11 @@ public class FullscreenActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(FullscreenActivity.this, InitialBudgetActivity.class));
+                if (Budget.getInstance().getInitialMonthlyBudget() == 0) {
+                    startActivity(new Intent(FullscreenActivity.this, InitialBudgetActivity.class));
+                } else {
+                    startActivity(new Intent(FullscreenActivity.this, StatusActivity.class));
+                }
             }
         });
 
@@ -232,7 +238,7 @@ public class FullscreenActivity extends AppCompatActivity {
     }
 
     public void onFeeding() {
-        if (danceBunny != null) {
+        if (receiptCost != null) {
 
             ImageView img = (ImageView) findViewById(R.id.Happy);
             img.setBackgroundResource(R.drawable.happy);

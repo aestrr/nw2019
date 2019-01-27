@@ -40,18 +40,23 @@ public class StatusActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            String value = extras.getString("key");
-            TextView text1 = findViewById(R.id.text_1);
-            text1.setText(value);
 
-            TextView text3 = findViewById(R.id.text_3);
-            text3.setText(value);
+        Double initialBudget = Budget.getInstance().getInitialMonthlyBudget();
+        Double usedBudget = Budget.getInstance().getBudgetUsed();
+        Double remainingBudget = Budget.getInstance().getCurrentBudget();
 
-            ProgressBar bar = findViewById(R.id.bar_progress);
-            bar.setProgress(100);
-        }
+        TextView text1 = findViewById(R.id.text_1);
+        text1.setText(initialBudget.toString());
+
+        TextView text2 = findViewById(R.id.text_2);
+        text2.setText(usedBudget.toString());
+
+        TextView text3 = findViewById(R.id.text_3);
+        text3.setText(remainingBudget.toString());
+
+        ProgressBar bar = findViewById(R.id.bar_progress);
+        bar.setProgress((int) ((remainingBudget / initialBudget) * 100));
+
 
 //
 //        Button button = findViewById(R.id.button);
