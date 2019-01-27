@@ -25,6 +25,6 @@ public class ReceiptManager {
     }
 
     public Receipt getReceipt() {
-        return receipts.get(0);
+         return receipts.get(receipts.size() - 1);
     }
 }

@@ -44,7 +44,10 @@
                 android:layout_width="110dp"
                 android:layout_height="74dp"
                 android:text="Status"
-                android:translationX="10dp"/>
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:translationX="0dp"
+                android:textColor="#F8F8F8"/>
 
             <Button
                 android:id="@+id/button_camera"
@@ -53,7 +56,10 @@
                 android:layout_height="74dp"
                 android:onClick="openCamera"
                 android:text="Camera"
-                android:translationX="40dp"/>
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:translationX="30dp"
+                android:textColor="#F8F8F8"/>
 
 
             <Button
@@ -61,9 +67,12 @@
                 style="?metaButtonBarButtonStyle"
                 android:layout_width="110dp"
                 android:layout_height="74dp"
-                android:text="Receipt"
                 android:onClick="openReceipt"
-                android:translationX="70dp"/>
+                android:text="Receipt"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:translationX="50dp"
+                android:textColor="#F8F8F8"/>
 
         </LinearLayout>
     </FrameLayout>
@@ -81,6 +90,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        app:srcCompat="@drawable/heart" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        app:srcCompat="@drawable/heart" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        app:srcCompat="@drawable/heart" />
 
 
 </FrameLayout>
