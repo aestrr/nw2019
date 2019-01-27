@@ -38,7 +38,7 @@ public class OcrStaticProcessor {
             return diffOfLefts;
         }
     };
-
+    /*
     public static JSONObject receiptJson = createJson();
 
     public OcrStaticProcessor() {
@@ -71,7 +71,7 @@ public class OcrStaticProcessor {
         }
         return null;
     }
-
+    */
     public static JSONObject parseDetectedItems(SparseArray<TextBlock> blocks) {
         int nTextBlocks = blocks.size();
         if (nTextBlocks < 1) {
@@ -143,10 +143,10 @@ public class OcrStaticProcessor {
         SimpleDateFormat formats4[] = {format0, format2};
         SimpleDateFormat formats2[] = {format1, format3};
         for (int li=0; li < textLines.size(); li++) {
-            List<?extends Text> elements = textLines.get(li).getComponents();
-            for (int ei=0; ei < elements.size(); ei++) {
-                Matcher matcher4 = datePattern4.matcher(elements.get(ei).getValue());
-                Matcher matcher2 = datePattern2.matcher(elements.get(ei).getValue());
+            String[] elements = textLines.get(li).getValue().split("\\s+");
+            for (int ei=0; ei < elements.length; ei++) {
+                Matcher matcher4 = datePattern4.matcher(elements[ei]);
+                Matcher matcher2 = datePattern2.matcher(elements[ei]);
                 if (matcher4.matches()) {
                     String word = matcher4.group(0);
                     Date parsedDate;
@@ -177,7 +177,7 @@ public class OcrStaticProcessor {
                 }
             }
         }
-        System.out.println("No date found on receipt, returning current date");
+        System.out.println("No date found on receipt, returning epoch");
         return new Date(0);
     }
 
@@ -190,7 +190,7 @@ public class OcrStaticProcessor {
             for (int ei=0; ei < elements.size(); ei++) {
                 Matcher matcher = costPattern.matcher(elements.get(ei).getValue());
                 if (matcher.matches()) {
-                    System.out.println("############# THIS IS BEING SENT TO Double.parseDouble" + matcher.group(1));
+                    // System.out.println("############# THIS IS BEING SENT TO Double.parseDouble" + matcher.group(1));
                     Double match = Double.parseDouble(matcher.group(1));
                     if (match > largestCost) {
                         largestCost = match;
@@ -229,7 +229,7 @@ public class OcrStaticProcessor {
                 }
 
             }
-            System.out.println("strLine: " + strLine);
+            // System.out.println("strLine: " + strLine);
             Matcher matcherPurchasedItems = pItemPattern.matcher(strLine);
             if (matcherPurchasedItems.matches()) {
                 String purchasedItem = matcherPurchasedItems.group(1);

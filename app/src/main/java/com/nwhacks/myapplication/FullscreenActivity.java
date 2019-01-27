@@ -376,9 +376,9 @@ public class FullscreenActivity extends AppCompatActivity {
                     System.out.println("textBlocks: " + textBlock.getValue());
                     //System.out.println("textBlocks: " + textBlocks.valueAt(i).getValue());
                 }
-                //JSONObject receipts = OcrStaticProcessor.parseDetectedItems(textBlocks);
+                JSONObject receipts = OcrStaticProcessor.parseDetectedItems(textBlocks);
                 Intent i = new Intent(FullscreenActivity.this, ReceiptActivity.class);
-                i.putExtra("EXTRA_JSON", OcrStaticProcessor.receiptJson.toString());
+                i.putExtra("EXTRA_JSON", receipts.toString());
                 startActivity(i);
             }
         }
