@@ -98,6 +98,7 @@ public class OcrStaticProcessor {
         Date transactionDate = getTransactionDate(textLines);
 
         String strTransactionDate = dateFormat.format(transactionDate);
+        strTransactionDate = strTransactionDate.replace("\\", "");
         Double totalCost = getTotalCost(textLines);
         JSONArray purchasedItems = getPurchasedItems(textLines);
 
