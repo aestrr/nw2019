@@ -199,7 +199,7 @@ public final class OcrCaptureActivity extends AppCompatActivity {
                 .setRequestedPreviewSize(1280, 1024)
                 .setRequestedFps(2.0f)
                 .setFlashMode(useFlash ? Camera.Parameters.FLASH_MODE_TORCH : null)
-                .setFocusMode(autoFocus ? Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE : null)
+                .setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)
                 .build();
     }
 
