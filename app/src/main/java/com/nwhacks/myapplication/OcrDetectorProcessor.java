@@ -21,14 +21,11 @@ import com.nwhacks.myapplication.ui.camera.GraphicOverlay;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.Text;
-import com.google.android.gms.vision.text.Line;
-import com.google.android.gms.vision.text.Element;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
-import java.util.Map;
 import java.util.Date;
 import java.util.List;
 import java.text.SimpleDateFormat;
@@ -66,7 +63,7 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
             return;
         }
     }
-    public JSONObject parseDetectedItems(SparseArray<TextBlock> blocks) throws JSONException, ParseException {
+    public JSONObject parseDetectedItems(SparseArray<TextBlock> blocks) {
         int nTextBlocks = blocks.size();
         if (nTextBlocks < 1) {
             return null;
@@ -83,14 +80,35 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
 
         JSONObject receipt = new JSONObject();
 
-        receipt.put("companyName", companyName);
-        receipt.put("transactionDate", strTransactionDate);
-        receipt.put("totalCost", totalCost);
-        receipt.put("purchasedItems", purchasedItems);
+        try {
+            receipt.put("companyName", companyName);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+        try {
+            receipt.put("transactionDate", strTransactionDate);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        try {
+            receipt.put("totalCost", totalCost);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+        try {
+            receipt.put("purchasedItems", purchasedItems);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
         return receipt;
     }
 
-    public Date getTransactionDate(SparseArray<TextBlock> blocks) throws ParseException {
+    public Date getTransactionDate(SparseArray<TextBlock> blocks) {
         String dateTemplate = "\\d{2}\\/\\d{2}\\/\\d{2,4}";
         for (int bi=0; bi < blocks.size(); bi++) {
             List<?extends Text> block = blocks.valueAt(bi).getComponents();
@@ -100,12 +118,15 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
                     Text element = line.get(ei);
                     String word = element.getValue();
                     if (Pattern.matches(word, dateTemplate)) {
-                        {
-                            SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyyy");
-                            Date parsedDate = format.parse(word);
-                            if (parsedDate != null) {
-                                return parsedDate;
-                            }
+                        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyyy");
+                        Date parsedDate;
+                        try {
+                            parsedDate = format.parse(word);
+                        } catch (ParseException e) {
+                            parsedDate = new Date();
+                        }
+                        if (parsedDate != null) {
+                            return parsedDate;
                         }
                     }
                 }
@@ -115,7 +136,7 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
         return new Date();
     }
 
-    public Double getTotalCost(SparseArray<TextBlock> blocks) throws ParseException {
+    public Double getTotalCost(SparseArray<TextBlock> blocks) {
         String costTemplate = "\\$\\d+\\.\\d{2}";
         Pattern costPattern = Pattern.compile(costTemplate);
         for (int bi=0; bi < blocks.size(); bi++) {
@@ -136,7 +157,7 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
         return 0.0;
     }
 
-    public JSONArray getPurchasedItems(SparseArray<TextBlock> blocks) throws ParseException, JSONException {
+    public JSONArray getPurchasedItems(SparseArray<TextBlock> blocks) {
         JSONArray purchasedItems = new JSONArray();
         String pItemTemplate = "(.+)\\s+(\\d+\\.\\d{2})";
         Pattern pItemPattern = Pattern.compile(pItemTemplate);
@@ -149,9 +170,13 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
                     String purchasedItem = matcher.group(0);
                     Double purchasedValue = Double.parseDouble(matcher.group(1));
                     JSONObject purchasedPair = new JSONObject();
-                    purchasedPair.put("productName", purchasedItem);
-                    purchasedPair.put("productCost", purchasedValue);
-                    purchasedItems.put(purchasedPair);
+                    try {
+                        purchasedPair.put("productName", purchasedItem);
+                        purchasedPair.put("productCost", purchasedValue);
+                        purchasedItems.put(purchasedPair);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
