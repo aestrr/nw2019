@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,7 +16,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:keepScreenOn="true"
-        android:text="@string/dummy_content"
+        android:text=" "
         android:textColor="#33b5e5"
         android:textSize="50sp"
         android:textStyle="bold" />
@@ -38,15 +39,47 @@
             tools:ignore="UselessParent">
 
             <Button
-                android:id="@+id/dummy_button"
+                android:id="@+id/button_camera"
                 style="?metaButtonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_width="110dp"
+                android:layout_height="74dp"
+                android:text="Status"
+                android:translationX="10dp"/>
+
+            <Button
+                android:id="@+id/button_status"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="110dp"
+                android:layout_height="74dp"
                 android:onClick="openCamera"
-                android:text="@string/dummy_button" />
+                android:text="Camera"
+                android:translationX="40dp"/>
+
+
+            <Button
+                android:id="@+id/button_receipt"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="110dp"
+                android:layout_height="74dp"
+                android:text="Receipt"
+                android:translationX="70dp"/>
 
         </LinearLayout>
     </FrameLayout>
+
+
+    <ImageView
+        android:id="@+id/Bunny"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/bunny" />
+
+    <ImageView
+        android:id="@+id/Happy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
 
 </FrameLayout>

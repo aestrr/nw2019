@@ -1,13 +1,22 @@
 package com.nwhacks.myapplication;
 
 import android.annotation.SuppressLint;
+
+import android.graphics.drawable.AnimationDrawable;
+
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
+
+import android.widget.EditText;
 
 
 /**
@@ -35,7 +44,11 @@ public class FullscreenActivity extends AppCompatActivity {
     private final Handler mHideHandler = new Handler();
     private View mContentView;
 
+
+    public AnimationDrawable bun;
+
     private static final int RC_OCR_CAPTURE = 9003;
+
 
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -110,7 +123,7 @@ public class FullscreenActivity extends AppCompatActivity {
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+        //findViewById(R.id.button).setOnTouchListener(mDelayHideTouchListener);
     }
 
     @Override
@@ -166,8 +179,58 @@ public class FullscreenActivity extends AppCompatActivity {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
+        ImageView img = (ImageView) findViewById(R.id.Happy);
+        img.setBackgroundResource(R.drawable.happy);
+        bun = (AnimationDrawable) img.getBackground();
+
+        final ImageView stand = findViewById(R.id.Bunny);
+        stand.setVisibility(mContentView.INVISIBLE);
+
+        bun.run();
+
+    }
+
+
+
+    @Override
+    public void onEnterAnimationComplete() {
+        super.onEnterAnimationComplete();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        findViewById(R.id.Bunny).setVisibility(mContentView.VISIBLE);
+    }
+
+//
+//    AnimationDrawable rocketAnimation;
+//
+//    public void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.main);
+//
+//        ImageView rocketImage = (ImageView) findViewById(R.id.Bunny);
+//        rocketImage.setBackgroundResource(R.drawable.bunny_happy);
+//        rocketAnimation = (AnimationDrawable) rocketImage.getBackground();
+//
+//        rocketImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                rocketAnimation.start();
+//            }
+//        });
+//    }
+
+
     public void openCamera(View view) {
         Intent intent = new Intent(this, OcrCaptureActivity.class);
         startActivity(intent);
     }
+
 }
