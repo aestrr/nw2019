@@ -4,12 +4,12 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class Budget {
-    private Budget budget;
+    private static Budget budget;
     private double initialMonthlyBudget;
     private double currentBudget;
     private Calendar initialBudgetSetTime;
 
-    public Budget getInstance() {
+    public static Budget getInstance() {
         if (budget == null) {
             budget = new Budget(0.0);
         }
