@@ -130,16 +130,15 @@ public class OcrStaticProcessor {
             List<?extends Text> block = blocks.valueAt(bi).getComponents();
             for (int li=0; li < block.size(); li++) {
                 String strLine = block.get(li).getValue();
-                Matcher matcher = subTotalPattern.matcher(strLine);
-                if (matcher.matches() && purchasedItems.length() > 0) {
+                Matcher matcherSubTotal = subTotalPattern.matcher(strLine);
+                if (matcherSubTotal.matches() && purchasedItems.length() > 0) {
                     System.out.println("Hit sub total line, stopped looking for purchasedItems");
                     return purchasedItems;
                 }
-                Matcher matcher = pItemPattern.matcher(strLine);
-                if (matcher.matches()) {
-                    Matcher matcher = pItemPattern.matcher(strLine);
-                    String purchasedItem = matcher.group(0);
-                    Double purchasedValue = Double.parseDouble(matcher.group(1));
+                Matcher matcherPurchasedItems = pItemPattern.matcher(strLine);
+                if (matcherPurchasedItems.matches()) {
+                    String purchasedItem = matcherPurchasedItems.group(0);
+                    Double purchasedValue = Double.parseDouble(matcherPurchasedItems.group(1));
                     JSONObject purchasedPair = new JSONObject();
                     try {
                         purchasedPair.put("productName", purchasedItem);
