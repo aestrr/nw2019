@@ -32,6 +32,7 @@ public class JSONToRecieptParser {
            double productCost = product.getDouble("productCost");
            items.add(new Product(productName, productCost));
        }
+
        return new Receipt(companyName, totalCost, items, transactionDate);
 
     }
