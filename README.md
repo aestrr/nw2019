@@ -4,7 +4,7 @@ BudgetBunny is the new budgeting app that allows you to scan and save your recei
 Simply click on the Camera button to take a picture of your reciept. Then, click on the "Feed" button to feed your receipt to your bunny. Your expenses for that receipt will automatically be deducted from your monthly budget, which you can set in the Status page
 
 ## Building the project
-
+You can build and run the project on Android Studio
 
 ## Inspiration
 During my application to NWHacks, I was pretty stumped on what to answer for the question on what I was planning on building here. One of my team members suggested I think of something that you _ can’t _ do yet with software, and see if you can implement it. After some thinking, I realized that there weren’t any good budgeting apps that allowed you to take pictures of your receipts every time you bought something. BudgetBunny was our solution; a way to integrate receipts that you get after purchases with a budgeting app (with a cute bunny!)
