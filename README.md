@@ -28,6 +28,25 @@ Well, the first thing we learnt is to have our environment set up _ before _ the
 
 ## What's next for BudgetBunny
 We’re definitely thinking of working more on this project in the future (preferably after a good night’s rest). There were a lot of features that we really wanted implemented, but simply didn’t have the time to create. For instance, we wanted features to export reciept data, show the items in the receipt itself, and implement a fancier UI. If we can get enough traction, we may even plan to release this app on the Play Store!
+
+
+
+
+
+
+
+
+
 ![](bunny/Capture.PNG)
+
+
+
+
+
 ![](bunny/status.PNG)
+
+
+
+
+
 ![](bunny/receipts.PNG)
